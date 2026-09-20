@@ -13,49 +13,16 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
-    - name: Install System Dependencies & Tools
+    - name: Setup Theos Environment (Official Action)
+      uses: theos/action@v1
+
+    - name: Build Package
       run: |
-        sudo apt-get update
-        sudo apt-get install -y make git curl dpkg-dev xz-utils bzip2 libxml2-utils
-
-    - name: Setup Theos Environment, Toolchain & SDKs
-      run: |
-        export THEOS=~/theos
-        rm -rf $THEOS
-        
-        # 1. Clone Theos chính chủ
-        git clone --recursive https://github.com/theos/theos.git $THEOS
-
-        # 2. Cài đặt ldid chuẩn cho Linux
-        sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
-        sudo chmod +x /usr/local/bin/ldid
-
-        # 3. Clone bộ iPhoneOS SDKs chuẩn
-        rm -rf $THEOS/sdks
-        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
-
-        # 4. Clone toolchain Linux trực tiếp bằng git (đã được fix cấu hình an toàn)
-        mkdir -p $THEOS/toolchain/linux
-        git clone --recursive https://github.com/theos/toolchain-linux.git $THEOS/toolchain/linux/iphone
-
-    - name: Clean and Build Package
-      run: |
-        export THEOS=~/theos
-        export PATH=$THEOS/bin:/usr/local/bin:$PATH
-        
-        # Kiểm tra thư mục HideApp xem đã đủ file chưa
-        echo "Checking HideApp contents:"
-        ls -la HideApp/
-        
-        # Thực hiện build từ thư mục gốc
         make clean
         make package
-
-    - name: Verify Deb Package Output
-      run: |
-        echo "Checking generated packages..."
-        ls -la packages/
 
     - name: Upload Artifact (.deb)
       uses: actions/upload-artifact@v4
