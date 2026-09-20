@@ -10,7 +10,7 @@ static int kelen_replaced_sysctl(int *name, u_int namelen, void *oldp, size_t *o
     // Kiểm tra nếu ứng dụng cố gắng truy vấn thông tin tiến trình (KERN_PROC, KERN_PROC_PID)
     if (namelen >= 2 && name[0] == CTL_KERN && name[1] == KERN_PROC) {
         int result = orig_sysctl(name, namelen, oldp, oldlenp, newp, newlen);
-        if (oldp != NULL && oldlenp != null && *oldlenp >= sizeof(struct kinfo_proc)) {
+        if (oldp != NULL && oldlenp != NULL && *oldlenp >= sizeof(struct kinfo_proc)) {
             struct kinfo_proc *myProc = (struct kinfo_proc *)oldp;
             // Xóa sạch cờ P_TRACED (đang bị debug hoặc giám sát) để lừa ứng dụng
             myProc->kp_proc.p_flag &= ~P_TRACED;
@@ -54,5 +54,5 @@ void Init_Mod_SyscallCore(void) {
         {"sysctlbyname", (void *)kelen_replaced_sysctlbyname, (void **)&orig_sysctlbyname}
     };
     rebind_symbols(rebindings, 2);
-    KELEN_LOG:@"Mod_SyscallCore đã khởi tạo thành công.";
+    KELEN_LOG(@"Mod_SyscallCore đã khởi tạo thành công.");
 }
