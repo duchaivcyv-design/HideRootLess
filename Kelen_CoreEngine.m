@@ -59,12 +59,14 @@ KelenAppConfig Kelen_GetAppConfig(void) {
 void Kelen_InitializeAllModules(void) {
     @autoreleasepool {
         if (!Kelen_ShouldBypassCurrentApp()) {
-            KELEN_LOG:@"Ứng dụng này không được kích hoạt chế độ ẩn Jailbreak.";
+            // Đã sửa: Thêm dấu ngoặc đơn cho KELEN_LOG
+            KELEN_LOG(@"Ứng dụng này không được kích hoạt chế độ ẩn Jailbreak.");
             return;
         }
 
         KelenAppConfig config = Kelen_GetAppConfig();
-        KELEN_LOG:@"Đang kích hoạt hệ thống ẩn Jailbreak cho ứng dụng: %@", [[NSBundle mainBundle] bundleIdentifier];
+        // Đã sửa: Thêm dấu ngoặc đơn cho KELEN_LOG
+        KELEN_LOG(@"Đang kích hoạt hệ thống ẩn Jailbreak cho ứng dụng: %@", [[NSBundle mainBundle] bundleIdentifier]);
 
         if (config.hookFileSystem) {
             Init_Mod_FileSystem();
@@ -85,6 +87,7 @@ void Kelen_InitializeAllModules(void) {
             Init_Mod_ObjCRuntime();
         }
         
-        KELEN_LOG:@"Toàn bộ module lõi đã được khởi tạo và đồng bộ thành công!";
+        // Đã sửa: Thêm dấu ngoặc đơn cho KELEN_LOG
+        KELEN_LOG(@"Toàn bộ module lõi đã được khởi tạo và đồng bộ thành công!");
     }
 }
