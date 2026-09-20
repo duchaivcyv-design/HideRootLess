@@ -7,7 +7,7 @@
 #import <mach/mach.h>
 
 #define KELEN_CORE_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_ENGINE_LOG(fmt, ...) NSLog((@"HideRLess-CoreEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_ENGINE_LOG(fmt, ...) NSLog(@"HideRLess-CoreEngine: " fmt, ##__VA_ARGS__)
 
 @interface BypassCoreEngine : NSObject {
     BOOL _isEngineEnabled;
@@ -57,7 +57,7 @@ static void EnginePreferencesChangedCallback(CFNotificationCenterRef center, voi
         if (prefs) {
             [_activeModulesConfig setDictionary:prefs];
             _isEngineEnabled = prefs[@"KelenMasterSwitch"] ? [prefs[@"KelenMasterSwitch"] boolValue] : YES;
-            KELEN_ENGINE_LOG((@"[Sync] Đã đồng bộ cấu hình thành công cho toàn bộ mô-đun hệ thống."));
+            KELEN_ENGINE_LOG(@"[Sync] Đã đồng bộ cấu hình thành công cho toàn bộ mô-đun hệ thống.");
         } else {
             _isEngineEnabled = YES;
         }
@@ -126,6 +126,6 @@ static void EnginePreferencesChangedCallback(CFNotificationCenterRef center, voi
 %ctor {
     @autoreleasepool {
         [BypassCoreEngine sharedInstance];
-        KELEN_ENGINE_LOG((@"[Init] Mô-đun BypassCoreEngine đã được khởi chạy hoàn tất."));
+        KELEN_ENGINE_LOG(@"[Init] Mô-đun BypassCoreEngine đã được khởi chạy hoàn tất.");
     }
 }
