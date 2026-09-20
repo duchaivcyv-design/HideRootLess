@@ -4,6 +4,7 @@
 #import <notify.h>
 #import <sys/stat.h>
 #import <fcntl.h>
+#import <substrate.h> // Thêm header của Substrate để dùng MSHookFunction
 
 #define KELEN_SYMLINK_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
 #define KELEN_SYMLINK_LOG(fmt, ...) NSLog(@"HideRLess-SymlinkEngine: " fmt, ##__VA_ARGS__)
@@ -84,15 +85,10 @@ static void SymlinkPreferencesChanged(CFNotificationCenterRef center, void *obse
     return %orig(path, buf, bufsiz);
 }
 
-%hookf(int, open, const char *path, int oflag, ...) {
-    va_list args;
-    va_start(args, oflag);
-    mode_t mode = 0;
-    if (oflag & O_CREAT) {
-        mode = va_arg(args, int);
-    }
-    va_end(args);
+// Khai báo con trỏ hàm và hàm thay thế cho open() (hàm variadic)
+static int (*original_open)(const char *path, int oflag, ...);
 
+static int replaced_open(const char *path, int oflag, ...) {
     if (path && [[SymbolicLinkShieldEngine sharedInstance] isSymlinkShieldEnabled]) {
         NSString *pathStr = [NSString stringWithUTF8String:path];
         if ([pathStr containsString:@"/var/jb/bin"] || [pathStr containsString:@"/var/jb/usr"]) {
@@ -100,12 +96,29 @@ static void SymlinkPreferencesChanged(CFNotificationCenterRef center, void *obse
             return -1;
         }
     }
-    return %orig;
+
+    // Xử lý trích xuất tham số biến đổi (va_list) cho open()
+    va_list args;
+    va_start(args, oflag);
+    int result = 0;
+    if (oflag & O_CREAT) {
+        mode_t mode = va_arg(args, int);
+        va_end(args);
+        result = original_open(path, oflag, mode);
+    } else {
+        va_end(args);
+        result = original_open(path, oflag);
+    }
+    return result;
 }
 
 %ctor {
     @autoreleasepool {
         [SymbolicLinkShieldEngine sharedInstance];
+        
+        // Thực hiện hook thủ công hàm open bằng MSHookFunction
+        MSHookFunction((void *)open, (void *)replaced_open, (void **)&original_open);
+        
         KELEN_SYMLINK_LOG(@"[Init] Mô-đun SymbolicLinkShieldEngine đã sẵn sàng hoạt động.");
     }
 }
