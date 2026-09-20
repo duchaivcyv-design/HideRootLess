@@ -10,7 +10,7 @@ HideRLess_FILES = \
     AntiDebuggingEngine.m \
     BypassCoreEngine.x \
     BypassDashboardController.m \
-    DYLDInterceptionEngine.x \
+    DYLDInterceptionEngine.xm \
     DeviceIdentifierMaskEngine.x \
     EnvironmentShieldEngine.x \
     HideAppController.m \
