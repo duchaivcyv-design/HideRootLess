@@ -5,7 +5,7 @@
 #import <Security/Security.h>
 
 #define KELEN_KEYCHAIN_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_KEYCHAIN_LOG(fmt, ...) NSLog((@"HideRLess-KeychainEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_KEYCHAIN_LOG(fmt, ...) NSLog(@"HideRLess-KeychainEngine: " fmt, ##__VA_ARGS__)
 
 @interface KeychainProtectionEngine : NSObject {
     BOOL _keychainShieldActive;
@@ -53,7 +53,7 @@ static void KeychainPreferencesChanged(CFNotificationCenterRef center, void *obs
         if (prefs) {
             _keychainShieldActive = prefs[@"KelenKeychainProtection"] ? [prefs[@"KelenKeychainProtection"] boolValue] : YES;
             if (_keychainShieldActive) {
-                KELEN_KEYCHAIN_LOG:@"[KeychainProtection] Đã kích hoạt cơ chế bảo vệ và cô lập Keychain.";
+                KELEN_KEYCHAIN_LOG(@"[KeychainProtection] Đã kích hoạt cơ chế bảo vệ và cô lập Keychain.");
             }
         } else {
             _keychainShieldActive = YES;
@@ -92,6 +92,6 @@ OSStatus intercepted_SecItemAdd(CFDictionaryRef attributes, CFTypeRef *result) {
 %ctor {
     @autoreleasepool {
         [KeychainProtectionEngine sharedInstance];
-        KELEN_KEYCHAIN_LOG:@"[Init] Mô-đun KeychainProtectionEngine đã sẵn sàng hoạt động.";
+        KELEN_KEYCHAIN_LOG(@"[Init] Mô-đun KeychainProtectionEngine đã sẵn sàng hoạt động.");
     }
 }
