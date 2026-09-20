@@ -5,7 +5,7 @@
 #import <dlfcn.h>
 
 #define KELEN_GUARD_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_GUARD_LOG(fmt, ...) NSLog((@"HideRLess-HookGuard: " fmt), ##__VA_ARGS__)
+#define KELEN_GUARD_LOG(fmt, ...) NSLog(@"HideRLess-HookGuard: " fmt, ##__VA_ARGS__)
 
 @interface HookGuardEngine : NSObject {
     BOOL _hookGuardActive;
@@ -53,7 +53,7 @@ static void GuardPreferencesChanged(CFNotificationCenterRef center, void *observ
         if (prefs) {
             _hookGuardActive = prefs[@"KelenHookGuard"] ? [prefs[@"KelenHookGuard"] boolValue] : YES;
             if (_hookGuardActive) {
-                KELEN_GUARD_LOG:@"[HookGuard] Đã kích hoạt mô-đun giám sát và bảo vệ tính toàn vẹn hook.";
+                KELEN_GUARD_LOG(@"[HookGuard] Đã kích hoạt mô-đun giám sát và bảo vệ tính toàn vẹn hook.");
             }
         } else {
             _hookGuardActive = YES;
@@ -77,7 +77,7 @@ static void GuardPreferencesChanged(CFNotificationCenterRef center, void *observ
         // Giám sát các truy vấn hàm hệ thống nhạy cảm để tránh bị dò quét bảng chỉ mục
         NSString *symStr = [NSString stringWithUTF8String:symbol];
         if ([symStr containsString:@"ptrace"] || [symStr containsString:@"sysctl"] || [symStr containsString:@"syscall"]) {
-            KELEN_GUARD_LOG:@"[HookGuard] Phát hiện tiến trình truy vấn biểu tượng nhạy cảm: %@", symStr];
+            KELEN_GUARD_LOG(@"[HookGuard] Phát hiện tiến trình truy vấn biểu tượng nhạy cảm: %@", symStr);
         }
     }
     return orig_symbol;
@@ -86,6 +86,6 @@ static void GuardPreferencesChanged(CFNotificationCenterRef center, void *observ
 %ctor {
     @autoreleasepool {
         [HookGuardEngine sharedInstance];
-        KELEN_GUARD_LOG:@"[Init] Mô-đun HookGuardEngine đã sẵn sàng hoạt động.";
+        KELEN_GUARD_LOG(@"[Init] Mô-đun HookGuardEngine đã sẵn sàng hoạt động.");
     }
 }
