@@ -6,7 +6,7 @@
 #import <dlfcn.h>
 
 #define KELEN_ENV_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_ENV_LOG(fmt, ...) NSLog((@"HideRLess-EnvironmentShield: " fmt), ##__VA_ARGS__)
+#define KELEN_ENV_LOG(fmt, ...) NSLog(@"HideRLess-EnvironmentShield: " fmt, ##__VA_ARGS__)
 
 @interface EnvironmentShieldEngine : NSObject {
     BOOL _envShieldActive;
@@ -54,7 +54,7 @@ static void EnvPreferencesChanged(CFNotificationCenterRef center, void *observer
         if (prefs) {
             _envShieldActive = prefs[@"KelenEnvironmentShield"] ? [prefs[@"KelenEnvironmentShield"] boolValue] : YES;
             if (_envShieldActive) {
-                KELEN_ENV_LOG:@"[EnvironmentShield] Đã kích hoạt bảo vệ môi trường chống phân giải symbolic link hệ thống.";
+                KELEN_ENV_LOG(@"[EnvironmentShield] Đã kích hoạt bảo vệ môi trường chống phân giải symbolic link hệ thống.");
             }
         } else {
             _envShieldActive = YES;
@@ -79,9 +79,9 @@ static void EnvPreferencesChanged(CFNotificationCenterRef center, void *observer
         if ([pathStr containsString:@"/Applications"] || 
             [pathStr containsString:@"/Library/Ringtones"] || 
             [pathStr containsString:@"/Library/Wallpaper"] || 
-            [path containsString:@"/usr/include"] || 
-            [path containsString:@"/usr/libexec"] || 
-            [path containsString:@"/usr/share"]) {
+            [pathStr containsString:@"/usr/include"] || 
+            [pathStr containsString:@"/usr/libexec"] || 
+            [pathStr containsString:@"/usr/share"]) {
             // Giả lập trạng thái tệp thông thường thay vì symlink sang phân vùng rootless
             int result = %orig(path, buf);
             if (result == 0 && S_ISLNK(buf->st_mode)) {
@@ -125,6 +125,6 @@ static void EnvPreferencesChanged(CFNotificationCenterRef center, void *observer
 %ctor {
     @autoreleasepool {
         [EnvironmentShieldEngine sharedInstance];
-        KELEN_ENV_LOG:@"[Init] Mô-đun EnvironmentShieldEngine đã được nạp thành công.";
+        KELEN_ENV_LOG(@"[Init] Mô-đun EnvironmentShieldEngine đã được nạp thành công.");
     }
 }
