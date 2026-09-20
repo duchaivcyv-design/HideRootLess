@@ -35,19 +35,19 @@ jobs:
         rm -rf $THEOS/sdks
         git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
-        # 4. Tải toolchain Linux chính thức cho Theos để cung cấp trình biên dịch clang
-        git clone --recursive https://github.com/theos/toolchain-linux.git $THEOS/toolchain/linux/iphone
+        # 4. Sử dụng script chính thức của Theos để cài đặt Toolchain Linux tự động
+        yes | bash $THEOS/bin/install-theos-toolchain.sh || true
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
         export PATH=$THEOS/bin:/usr/local/bin:$PATH
         
-        # Kiểm tra lại danh sách file trong thư mục HideApp trước khi build
+        # Kiểm tra danh sách file trong HideApp
         echo "Checking HideApp contents:"
         ls -la HideApp/
         
-        # Thực hiện clean và build từ thư mục gốc
+        # Thực hiện build từ thư mục gốc
         make clean
         make package
 
