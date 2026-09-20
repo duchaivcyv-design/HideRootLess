@@ -18,6 +18,11 @@ jobs:
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
 
+    - name: Setup Theos SDKs
+      run: |
+        git clone https://github.com/theos/sdks.git /tmp/theos-sdks
+        cp -R /tmp/theos-sdks/*.sdk $HOME/theos/sdks/
+
     - name: Install ldid
       run: brew install ldid
 
