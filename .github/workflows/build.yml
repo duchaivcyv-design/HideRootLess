@@ -22,23 +22,31 @@ jobs:
     - name: Setup Theos Environment
       run: |
         export THEOS=~/theos
+        rm -rf $THEOS
         git clone --recursive https://github.com/theos/theos.git $THEOS
 
-        # Cài đặt ldid chuẩn cho Linux từ Procursus / Theos toolchain
+        # Cài đặt ldid chuẩn cho Linux
         sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
         sudo chmod +x /usr/local/bin/ldid
 
-        # Cài đặt đầy đủ các phiên bản iPhoneOS SDKs
-        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
+        # Cài đặt iPhoneOS SDKs
+        if [ ! -d "$THEOS/sdks" ]; then
+          git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
+        fi
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
         export PATH=$THEOS/bin:/usr/local/bin:$PATH
         
-        # Thực hiện clean và build toàn bộ cấu trúc multi-directory (KelenCore + HideApp)
+        # Dọn dẹp và tiến hành build toàn bộ dự án đa cấp (KelenCore + HideApp)
         make clean
         make package
+
+    - name: Verify Deb Package Output
+      run: |
+        echo "Checking generated packages..."
+        ls -la packages/
 
     - name: Upload Artifact (.deb)
       uses: actions/upload-artifact@v4
