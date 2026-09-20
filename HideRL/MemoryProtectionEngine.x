@@ -4,6 +4,7 @@
 #import <notify.h>
 #import <mach/mach.h>
 #import <mach/vm_map.h>
+#import <mach/mach_vm.h>
 
 #define KELEN_MEM_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
 #define KELEN_MEM_LOG(fmt, ...) NSLog(@"HideRLess-MemoryEngine: " fmt, ##__VA_ARGS__)
