@@ -81,7 +81,9 @@
     [prefs writeToFile:KELEN_PREFS_PATH atomically:YES];
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.kelen.masterbypass/ReloadPrefs"), NULL, NULL, YES);
-    KELEN_LOG:@"Đã cập nhật ẩn app [%@]: %@", bundleID, value;
+    
+    // Đã sửa lỗi cú pháp macro/log tại đây
+    NSLog(@"HideAppManager: Đã cập nhật ẩn app [%@]: %@", bundleID, value);
 }
 
 @end
