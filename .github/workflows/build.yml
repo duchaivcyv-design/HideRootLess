@@ -8,22 +8,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    container:
-      image: gioah/theos:latest
+    runs-on: macos-13  # Hoặc dùng ubuntu-latest bên dưới nếu muốn dùng Linux
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Verify Environment
+    - name: Install Theos & Dependencies (Linux Environment)
       run: |
-        echo "Theos Directory: $THEOS"
-        gcc --version
+        sudo apt-get update
+        sudo apt-get install -y clang ldid make git curl dpkg-dev
+        
+        # Cài đặt Theos chuẩn
+        export THEOS=~/theos
+        git clone --recursive https://github.com/theos/theos.git $THEOS
+        
+        # Cài đặt toolchain (SDK / iPhoneOS SDK)
+        sudo git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
     - name: Clean and Build Package
       run: |
+        export THEOS=~/theos
+        export PATH=$THEOS/bin:$PATH
         make clean
         make package
 
