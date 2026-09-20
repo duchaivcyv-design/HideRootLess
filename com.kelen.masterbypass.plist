@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KelenGlobalExceptionMode</key>
+	<true/>
+	<key>KelenHookAntiDebug</key>
+	<true/>
+	<key>KelenHookDyld</key>
+	<true/>
+	<key>KelenHookFileSystem</key>
+	<true/>
+	<key>KelenHookSysctl</key>
+	<true/>
+	<key>KelenStockEmulation</key>
+	<true/>
+	<key>KelenEnableDebugLogs</key>
+	<true/>
+</dict>
+</plist>
