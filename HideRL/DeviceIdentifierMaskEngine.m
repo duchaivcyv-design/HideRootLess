@@ -4,7 +4,7 @@
 #import <notify.h>
 
 #define KELEN_DEVICE_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_DEVICE_LOG(fmt, ...) NSLog((@"HideRLess-DeviceEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_DEVICE_LOG(fmt, ...) NSLog(@"HideRLess-DeviceEngine: " fmt, ##__VA_ARGS__)
 
 @interface DeviceIdentifierMaskEngine : NSObject {
     BOOL _deviceMaskActive;
@@ -58,7 +58,7 @@ static void DevicePreferencesChanged(CFNotificationCenterRef center, void *obser
         if (prefs) {
             _deviceMaskActive = prefs[@"KelenDeviceMask"] ? [prefs[@"KelenDeviceMask"] boolValue] : YES;
             if (_deviceMaskActive) {
-                KELEN_DEVICE_LOG:@"[DeviceMask] Đã kích hoạt mô-đun giả mạo thông tin định danh phần cứng.";
+                KELEN_DEVICE_LOG(@"[DeviceMask] Đã kích hoạt mô-đun giả mạo thông tin định danh phần cứng.");
             }
         } else {
             _deviceMaskActive = YES;
@@ -129,6 +129,6 @@ static void DevicePreferencesChanged(CFNotificationCenterRef center, void *obser
 %ctor {
     @autoreleasepool {
         [DeviceIdentifierMaskEngine sharedInstance];
-        KELEN_DEVICE_LOG:@"[Init] Mô-đun DeviceIdentifierMaskEngine đã được khởi tạo hoàn tất.";
+        KELEN_DEVICE_LOG(@"[Init] Mô-đun DeviceIdentifierMaskEngine đã được khởi tạo hoàn tất.");
     }
 }
