@@ -1,7 +1,13 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
 #import <Preferences/PSSwitchTableCell.h>
+#import <spawn.h>
 #import "Kelen_MasterSync.h"
+
+// Khai báo macro log an toàn nếu chưa có trong header
+#ifndef KELEN_LOG
+#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
+#endif
 
 // Khai báo interface đồng bộ mục con với KelenEngine
 @interface KelenAdvancedSubController : PSListController {
@@ -24,8 +30,7 @@
 
 - (NSArray *)specifiers {
     if (!_specifiers) {
-        NSMutableArray *specs = [array mutableCopy];
-        specs = [NSMutableArray array];
+        NSMutableArray *specs = [NSMutableArray array];
 
         // --- SECTION 1: CẤU HÌNH MÓC NỐI (HOOK ENGINE) ---
         PSSpecifier *group1 = [PSSpecifier preferenceSpecifierNamed:@"Cấu hình Mô-đun Hook & Bypass"
@@ -195,13 +200,13 @@
         CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
         CFNotificationCenterPostNotification(center, CFSTR("com.kelen.masterbypass/ReloadPrefs"), NULL, NULL, YES);
         
-        KELEN_LOG:@"Đã đồng bộ thành công khóa cấu hình: %@ thành giá trị: %@", key, value;
+        KELEN_LOG(@"Đã đồng bộ thành công khóa cấu hình: %@ thành giá trị: %@", key, value);
     }
 }
 
 - (void)handleClearCacheAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...";
+        KELEN_LOG(@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...");
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *tmpDir = NSTemporaryDirectory();
@@ -223,7 +228,7 @@
 
 - (void)handleRespringAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...";
+        KELEN_LOG(@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...");
         
         pid_t pid;
         const char *args[] = {"killall", "backboardd", NULL};
