@@ -67,5 +67,7 @@ void Init_Mod_DyldImages(void) {
         {"NSIsSymbolNameDefined", (void *)kelen_replaced_NSIsSymbolNameDefined, (void **)&orig_NSIsSymbolNameDefined}
     };
     rebind_symbols(rebindings, 3);
-    KELEN_LOG:@"Mod_DyldImages đã khởi tạo và ẩn thành công các dylib nhạy cảm.";
+    
+    // Đã sửa: Thêm dấu ngoặc đơn bọc ngoài cho KELEN_LOG
+    KELEN_LOG(@"Mod_DyldImages đã khởi tạo và ẩn thành công các dylib nhạy cảm.");
 }
