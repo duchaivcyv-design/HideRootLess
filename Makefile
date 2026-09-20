@@ -1,4 +1,4 @@
-TARGET := iphone:clang:latest:14.0
+TARGET := iphone:clang:14.4:14.0
 ARCHS = arm64
 INSTALL_TARGET_PROCESSES = SpringBoard
 
@@ -17,7 +17,6 @@ HideRLess_FILES = \
 HideRLess_FRAMEWORKS = UIKit Foundation
 HideRLess_PRIVATE_FRAMEWORKS = Preferences
 
-# Sửa lại 'sdk' thành 'sdks' hoặc bỏ hẳn dòng CFLAGS này nếu Theos đã tự nhận SDK
 HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -IHideRL
 
 HideRLess_ENTITLEMENTS = nickchan.entitlements
