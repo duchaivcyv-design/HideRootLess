@@ -5,7 +5,7 @@
 #import <syslog.h>
 
 #define KELEN_VIOLATION_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_VIOLATION_LOG(fmt, ...) NSLog((@"HideRLess-ViolationEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_VIOLATION_LOG(fmt, ...) NSLog(@"HideRLess-ViolationEngine: " fmt, ##__VA_ARGS__)
 
 @interface SandboxViolationShieldEngine : NSObject {
     BOOL _violationShieldActive;
@@ -53,7 +53,7 @@ static void ViolationPreferencesChanged(CFNotificationCenterRef center, void *ob
         if (prefs) {
             _violationShieldActive = prefs[@"KelenViolationShield"] ? [prefs[@"KelenViolationShield"] boolValue] : YES;
             if (_violationShieldActive) {
-                KELEN_VIOLATION_LOG:@"[ViolationShield] Đã kích hoạt mô-đun chặn ghi nhật ký lỗi vi phạm hệ thống.";
+                KELEN_VIOLATION_LOG(@"[ViolationShield] Đã kích hoạt mô-đun chặn ghi nhật ký lỗi vi phạm hệ thống.");
             }
         } else {
             _violationShieldActive = YES;
@@ -86,16 +86,14 @@ static void ViolationPreferencesChanged(CFNotificationCenterRef center, void *ob
     
     va_list args;
     va_start(args, format);
-    // Gọi cơ chế gốc với định dạng an toàn nếu không chứa từ khóa nhạy cảm
-    // (Lưu ý: Đối với hàm variadic dạng syslog trong hookf, chuyển tiếp trực tiếp hoặc lọc nội dung)
+    // Sử dụng vsyslog để truyền tải chính xác các đối số biến đổi (variadic arguments)
+    vsyslog(priority, format, args);
     va_end(args);
-    
-    %orig(priority, "%s", format);
 }
 
 %ctor {
     @autoreleasepool {
         [SandboxViolationShieldEngine sharedInstance];
-        KELEN_VIOLATION_LOG:@"[Init] Mô-đun SandboxViolationShieldEngine đã sẵn sàng hoạt động.";
+        KELEN_VIOLATION_LOG(@"[Init] Mô-đun SandboxViolationShieldEngine đã sẵn sàng hoạt động.");
     }
 }
