@@ -1,4 +1,4 @@
-name: Build HideRLess Deb Package
+name: Build and Package Theos App
 
 on:
   push:
@@ -8,55 +8,42 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Install System Dependencies
+    - name: Setup Theos
       run: |
-        sudo apt-get update
-        sudo apt-get install -y make git curl dpkg-dev xz-utils bzip2 libxml2-utils
+        git clone --recursive https://github.com/theos/theos.git $HOME/theos
 
-    - name: Setup Theos, SDKs & Toolchain
+    - name: Install ldid
+      run: brew install ldid
+
+    - name: Compile and Package
       run: |
-        export THEOS=~/theos
-        rm -rf $THEOS
+        export THEOS=$HOME/theos
         
-        # 1. Clone Theos chính chủ
-        git clone --recursive https://github.com/theos/theos.git $THEOS
-
-        # 2. Cài đặt ldid chuẩn cho Linux
-        sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
-        sudo chmod +x /usr/local/bin/ldid
-
-        # 3. Clone bộ iPhoneOS SDKs chuẩn
-        rm -rf $THEOS/sdks
-        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
-
-        # 4. Tải toolchain Linux (Clang) bằng link trực tiếp giải nén tar.xz chính hãng từ Procursus / Theos
-        mkdir -p $THEOS/toolchain/linux/iphone
-        curl -sL https://github.com/theos/toolchain-linux/releases/download/latest/linux-iphone-toolchain.tar.gz -o /tmp/toolchain.tar.gz || \
-        curl -sL https://nightly.link/theos/toolchain-linux/workflows/main/master/toolchain-linux.tar.gz -o /tmp/toolchain.tar.gz || true
+        # Build stage và ép quyền script tránh lỗi 644
+        make stage || true
+        find . -name "postinst" -exec chmod 755 {} +
+        find . -name "prerm" -exec chmod 755 {} +
+        find . -name "preinst" -exec chmod 755 {} +
+        find . -name "postrm" -exec chmod 755 {} +
         
-        if [ -f /tmp/toolchain.tar.gz ] && [ -s /tmp/toolchain.tar.gz ]; then
-          tar -xzf /tmp/toolchain.tar.gz -C $THEOS/toolchain/linux/iphone || tar -xf /tmp/toolchain.tar.gz -C $THEOS/toolchain/linux/iphone
-        else
-          # Fallback: clone bằng git qua URL không bị lỗi xác thực
-          git clone --depth=1 https://github.com/theos/toolchain-linux.git $THEOS/toolchain/linux/iphone
-        fi
-
-    - name: Build Package
-      run: |
-        export THEOS=~/theos
-        export PATH=$THEOS/bin:/usr/local/bin:$PATH
-        
-        make clean
+        # Tiến hành đóng gói
         make package
 
-    - name: Upload Artifact (.deb)
+    - name: Move and Organize Debian Package
+      run: |
+        # Tạo thư mục packages và gom tất cả file .deb được tạo ra vào đây
+        mkdir -p packages
+        find . -maxdepth 2 -name "*.deb" -exec cp {} packages/ \;
+        ls -la packages/
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: HideRLess-deb-package
+        name: packages
         path: packages/*.deb
