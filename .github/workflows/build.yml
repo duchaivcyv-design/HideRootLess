@@ -23,12 +23,14 @@ jobs:
         git clone https://github.com/theos/sdks.git /tmp/theos-sdks
         cp -R /tmp/theos-sdks/*.sdk $HOME/theos/sdks/
 
-    - name: Install ldid
-      run: brew install ldid
+    - name: Install Dependencies (ldid & dpkg)
+      run: |
+        brew install ldid dpkg
 
     - name: Compile and Package
       run: |
         export THEOS=$HOME/theos
+        export PATH="$THEOS/bin:$PATH"
         
         # Build stage và ép quyền script tránh lỗi 644
         make stage || true
