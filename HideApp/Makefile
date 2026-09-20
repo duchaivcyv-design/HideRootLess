@@ -11,5 +11,4 @@ HideAppManager_FRAMEWORKS := UIKit Foundation
 HideAppManager_PRIVATE_FRAMEWORKS := Preferences
 HideAppManager_CFLAGS = -fobjc-arc
 
-include $(THEOS_MAKE_PATH)/bundle.info.mk
 include $(THEOS_MAKE_PATH)/bundle.mk
