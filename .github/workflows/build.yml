@@ -1,0 +1,34 @@
+name: Build HideRLess Deb Package
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: gioah/theos:latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Verify Environment
+      run: |
+        echo "Theos Directory: $THEOS"
+        gcc --version
+
+    - name: Clean and Build Package
+      run: |
+        make clean
+        make package
+
+    - name: Upload Artifact (.deb)
+      uses: actions/upload-artifact@v4
+      with:
+        name: HideRLess-deb-package
+        path: packages/*.deb
