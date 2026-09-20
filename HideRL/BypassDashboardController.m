@@ -3,7 +3,7 @@
 #import <objc/runtime.h>
 
 #define KELEN_DASHBOARD_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_DASH_LOG(fmt, ...) NSLog((@"HideRLess-Dashboard: " fmt), ##__VA_ARGS__)
+#define KELEN_DASH_LOG(fmt, ...) NSLog(@"HideRLess-Dashboard: " fmt, ##__VA_ARGS__)
 
 @interface BypassDashboardController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     UITableView *_tableView;
@@ -128,7 +128,7 @@
             YES
         );
         
-        KELEN_DASHLOG:@"[Dashboard] Đã cập nhật trạng thái công tắc '%@' thành: %@", key, sender.on ? @"Bật" : @"Tắt";
+        KELEN_DASH_LOG(@"[Dashboard] Đã cập nhật trạng thái công tắc '%@' thành: %@", key, sender.on ? @"Bật" : @"Tắt");
     }
 }
 
