@@ -5,7 +5,7 @@
 #import <sys/sysctl.h>
 
 #define KELEN_PROC_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_PROC_LOG(fmt, ...) NSLog((@"HideRLess-ProcessEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_PROC_LOG(fmt, ...) NSLog(@"HideRLess-ProcessEngine: " fmt, ##__VA_ARGS__)
 
 @interface ProcessHidingEngine : NSObject {
     BOOL _processShieldActive;
@@ -56,7 +56,7 @@ static void ProcessPreferencesChanged(CFNotificationCenterRef center, void *obse
         if (prefs) {
             _processShieldActive = prefs[@"KelenProcessHiding"] ? [prefs[@"KelenProcessHiding"] boolValue] : YES;
             if (_processShieldActive) {
-                KELEN_PROC_LOG:@"[ProcessHiding] Đã kích hoạt mô-đun lọc và che giấu tiến trình hệ thống.";
+                KELEN_PROC_LOG(@"[ProcessHiding] Đã kích hoạt mô-đun lọc và che giấu tiến trình hệ thống.");
             }
         } else {
             _processShieldActive = YES;
@@ -100,6 +100,6 @@ static void ProcessPreferencesChanged(CFNotificationCenterRef center, void *obse
 %ctor {
     @autoreleasepool {
         [ProcessHidingEngine sharedInstance];
-        KELEN_PROC_LOG:@"[Init] Mô-đun ProcessHidingEngine đã sẵn sàng hoạt động.";
+        KELEN_PROC_LOG(@"[Init] Mô-đun ProcessHidingEngine đã sẵn sàng hoạt động.");
     }
 }
