@@ -24,7 +24,7 @@ jobs:
         export THEOS=~/theos
         rm -rf $THEOS
         
-        # 1. Clone Theos chính chủ kèm theo toolchain Linux (submodules)
+        # 1. Clone Theos chính chủ
         git clone --recursive https://github.com/theos/theos.git $THEOS
 
         # 2. Cài đặt ldid chuẩn cho Linux
@@ -35,19 +35,19 @@ jobs:
         rm -rf $THEOS/sdks
         git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
-        # 4. Tải toolchain biên dịch cho Linux (tránh lỗi thiếu clang)
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos-toolchain.sh)" || true
+        # 4. Tải toolchain Linux chính thức cho Theos để cung cấp trình biên dịch clang
+        git clone --recursive https://github.com/theos/toolchain-linux.git $THEOS/toolchain/linux/iphone
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
         export PATH=$THEOS/bin:/usr/local/bin:$PATH
         
-        # In ra đường dẫn hiện tại và kiểm tra file main.m có tồn tại không
-        pwd
+        # Kiểm tra lại danh sách file trong thư mục HideApp trước khi build
+        echo "Checking HideApp contents:"
         ls -la HideApp/
         
-        # Thực hiện build từ thư mục gốc
+        # Thực hiện clean và build từ thư mục gốc
         make clean
         make package
 
