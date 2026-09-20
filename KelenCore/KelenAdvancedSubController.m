@@ -125,20 +125,26 @@
         [group3 setProperty:@"Các tác vụ dọn dẹp và áp dụng cấu hình nhanh" forKey:@"footerText"];
         [specs addObject:group3];
 
-        // Item 6: Clear Cache Button (Đã sửa lại cú pháp chuẩn cho ButtonCell)
+        // Item 6: Clear Cache Button (Đã sửa đúng cú pháp action cho button cell)
         PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ Tạm (Cache)"
                                                              target:self
-                                                           selector:@selector(handleClearCacheAction:)
+                                                                set:nil
+                                                                get:nil
+                                                             detail:nil
                                                                cell:PSButtonCell
-                                                             detail:Nil];
+                                                               edit:nil];
+        [item6 setProperty:@selector(handleClearCacheAction:) forKey:@"action"];
         [specs addObject:item6];
 
-        // Item 7: Respring SpringBoard Button (Đã sửa lại cú pháp chuẩn cho ButtonCell)
+        // Item 7: Respring SpringBoard Button (Đã sửa đúng cú pháp action cho button cell)
         PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Áp dụng & Làm mới (Respring)"
                                                              target:self
-                                                           selector:@selector(handleRespringAction:)
+                                                                set:nil
+                                                                get:nil
+                                                             detail:nil
                                                                cell:PSButtonCell
-                                                             detail:Nil];
+                                                               edit:nil];
+        [item7 setProperty:@selector(handleRespringAction:) forKey:@"action"];
         [specs addObject:item7];
 
         _specifiers = specs;
