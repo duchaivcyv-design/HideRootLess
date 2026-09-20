@@ -35,15 +35,18 @@ jobs:
         rm -rf $THEOS/sdks
         git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
-        # 4. Sử dụng script chính thức của Theos để cài đặt Toolchain Linux tự động
-        yes | bash $THEOS/bin/install-theos-toolchain.sh || true
+        # 4. Tải trực tiếp gói toolchain Linux prebuilt chuẩn của Theos qua curl/tar (không dùng git clone)
+        mkdir -p $THEOS/toolchain/linux/iphone
+        curl -sL https://github.com/theos/toolchain-linux/archive/refs/heads/master.tar.gz | tar -xz -C $THEOS/toolchain/linux/iphone --strip-components=1
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
         export PATH=$THEOS/bin:/usr/local/bin:$PATH
         
-        # Kiểm tra danh sách file trong HideApp
+        # In ra cấu trúc thư mục để kiểm tra tệp tin
+        echo "Checking repository structure:"
+        ls -la
         echo "Checking HideApp contents:"
         ls -la HideApp/
         
