@@ -125,20 +125,20 @@
         [group3 setProperty:@"Các tác vụ dọn dẹp và áp dụng cấu hình nhanh" forKey:@"footerText"];
         [specs addObject:group3];
 
-        // Item 6: Clear Cache Button
+        // Item 6: Clear Cache Button (Đã sửa lại cú pháp chuẩn cho ButtonCell)
         PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ Tạm (Cache)"
                                                              target:self
                                                            selector:@selector(handleClearCacheAction:)
                                                                cell:PSButtonCell
-                                                             edit:Nil];
+                                                             detail:Nil];
         [specs addObject:item6];
 
-        // Item 7: Respring SpringBoard Button
+        // Item 7: Respring SpringBoard Button (Đã sửa lại cú pháp chuẩn cho ButtonCell)
         PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Áp dụng & Làm mới (Respring)"
                                                              target:self
                                                            selector:@selector(handleRespringAction:)
                                                                cell:PSButtonCell
-                                                             edit:Nil];
+                                                             detail:Nil];
         [specs addObject:item7];
 
         _specifiers = specs;
