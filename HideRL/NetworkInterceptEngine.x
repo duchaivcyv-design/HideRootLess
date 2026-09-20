@@ -4,7 +4,7 @@
 #import <notify.h>
 
 #define KELEN_NET_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_NET_LOG(fmt, ...) NSLog((@"HideRLess-NetworkEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_NET_LOG(fmt, ...) NSLog(@"HideRLess-NetworkEngine: " fmt, ##__VA_ARGS__)
 
 @interface NetworkInterceptEngine : NSObject {
     BOOL _netShieldActive;
@@ -52,7 +52,7 @@ static void NetPreferencesChanged(CFNotificationCenterRef center, void *observer
         if (prefs) {
             _netShieldActive = prefs[@"KelenNetworkIntercept"] ? [prefs[@"KelenNetworkIntercept"] boolValue] : YES;
             if (_netShieldActive) {
-                KELEN_NET_LOG:@"[NetworkIntercept] Đã kích hoạt cơ chế lọc và bảo vệ luồng dữ liệu mạng.";
+                KELEN_NET_LOG(@"[NetworkIntercept] Đã kích hoạt cơ chế lọc và bảo vệ luồng dữ liệu mạng.");
             }
         } else {
             _netShieldActive = YES;
@@ -76,7 +76,7 @@ static void NetPreferencesChanged(CFNotificationCenterRef center, void *observer
     if (request && [[NetworkInterceptEngine sharedInstance] isNetworkShieldEnabled]) {
         NSString *urlString = [[request URL] absoluteString];
         if (urlString && ([urlString containsString:@"jailbreak"] || [urlString containsString:@"detect"] || [urlString containsString:@"security_check"])) {
-            KELEN_NET_LOG:@"[Intercepted Request] Đã chặn luồng yêu cầu mạng đáng ngờ tới: %@", urlString];
+            KELEN_NET_LOG(@"[Intercepted Request] Đã chặn luồng yêu cầu mạng đáng ngờ tới: %@", urlString);
             // Tạo block phản hồi giả lập an toàn để ứng dụng không phát hiện lỗi mạng
             void (^safeHandler)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
                 NSDictionary *dummyDict = @{@"status": @(0), @"jailbroken": @(NO), @"message": @"secure"};
@@ -112,6 +112,6 @@ static void NetPreferencesChanged(CFNotificationCenterRef center, void *observer
 %ctor {
     @autoreleasepool {
         [NetworkInterceptEngine sharedInstance];
-        KELEN_NET_LOG:@"[Init] Mô-đun NetworkInterceptEngine đã sẵn sàng hoạt động.";
+        KELEN_NET_LOG(@"[Init] Mô-đun NetworkInterceptEngine đã sẵn sàng hoạt động.");
     }
 }
