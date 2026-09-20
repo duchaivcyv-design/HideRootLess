@@ -13,14 +13,45 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      with:
-        submodules: recursive
 
-    - name: Setup Theos Environment (Official Action)
-      uses: theos/action@v1
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make git curl dpkg-dev xz-utils bzip2 libxml2-utils
+
+    - name: Setup Theos, SDKs & Toolchain
+      run: |
+        export THEOS=~/theos
+        rm -rf $THEOS
+        
+        # 1. Clone Theos chính chủ
+        git clone --recursive https://github.com/theos/theos.git $THEOS
+
+        # 2. Cài đặt ldid chuẩn cho Linux
+        sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
+        sudo chmod +x /usr/local/bin/ldid
+
+        # 3. Clone bộ iPhoneOS SDKs chuẩn
+        rm -rf $THEOS/sdks
+        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
+
+        # 4. Tải toolchain Linux (Clang) bằng link trực tiếp giải nén tar.xz chính hãng từ Procursus / Theos
+        mkdir -p $THEOS/toolchain/linux/iphone
+        curl -sL https://github.com/theos/toolchain-linux/releases/download/latest/linux-iphone-toolchain.tar.gz -o /tmp/toolchain.tar.gz || \
+        curl -sL https://nightly.link/theos/toolchain-linux/workflows/main/master/toolchain-linux.tar.gz -o /tmp/toolchain.tar.gz || true
+        
+        if [ -f /tmp/toolchain.tar.gz ] && [ -s /tmp/toolchain.tar.gz ]; then
+          tar -xzf /tmp/toolchain.tar.gz -C $THEOS/toolchain/linux/iphone || tar -xf /tmp/toolchain.tar.gz -C $THEOS/toolchain/linux/iphone
+        else
+          # Fallback: clone bằng git qua URL không bị lỗi xác thực
+          git clone --depth=1 https://github.com/theos/toolchain-linux.git $THEOS/toolchain/linux/iphone
+        fi
 
     - name: Build Package
       run: |
+        export THEOS=~/theos
+        export PATH=$THEOS/bin:/usr/local/bin:$PATH
+        
         make clean
         make package
 
