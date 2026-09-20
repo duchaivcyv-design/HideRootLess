@@ -6,7 +6,7 @@
 #import <fcntl.h>
 
 #define KELEN_SYMLINK_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_SYMLINK_LOG(fmt, ...) NSLog((@"HideRLess-SymlinkEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_SYMLINK_LOG(fmt, ...) NSLog(@"HideRLess-SymlinkEngine: " fmt, ##__VA_ARGS__)
 
 @interface SymbolicLinkShieldEngine : NSObject {
     BOOL _symlinkShieldActive;
@@ -54,7 +54,7 @@ static void SymlinkPreferencesChanged(CFNotificationCenterRef center, void *obse
         if (prefs) {
             _symlinkShieldActive = prefs[@"KelenSymbolicLinkShield"] ? [prefs[@"KelenSymbolicLinkShield"] boolValue] : YES;
             if (_symlinkShieldActive) {
-                KELEN_SYMLINK_LOG:@"[SymbolicLinkShield] Đã kích hoạt mô-đun kiểm soát và ẩn danh symbolic link.";
+                KELEN_SYMLINK_LOG(@"[SymbolicLinkShield] Đã kích hoạt mô-đun kiểm soát và ẩn danh symbolic link.");
             }
         } else {
             _symlinkShieldActive = YES;
@@ -76,7 +76,7 @@ static void SymlinkPreferencesChanged(CFNotificationCenterRef center, void *obse
     if (path && [[SymbolicLinkShieldEngine sharedInstance] isSymlinkShieldEnabled]) {
         NSString *pathStr = [NSString stringWithUTF8String:path];
         if ([pathStr containsString:@"/var/jb"] || [pathStr containsString:@"/Library/MobileSubstrate"]) {
-            KELEN_SYMLINK_LOG:@"[Intercepted] Đã chặn luồng đọc symlink tại đường dẫn: %@", pathStr];
+            KELEN_SYMLINK_LOG(@"[Intercepted] Đã chặn luồng đọc symlink tại đường dẫn: %@", pathStr);
             errno = ENOENT;
             return -1;
         }
@@ -106,6 +106,6 @@ static void SymlinkPreferencesChanged(CFNotificationCenterRef center, void *obse
 %ctor {
     @autoreleasepool {
         [SymbolicLinkShieldEngine sharedInstance];
-        KELEN_SYMLINK_LOG:@"[Init] Mô-đun SymbolicLinkShieldEngine đã sẵn sàng hoạt động.";
+        KELEN_SYMLINK_LOG(@"[Init] Mô-đun SymbolicLinkShieldEngine đã sẵn sàng hoạt động.");
     }
 }
