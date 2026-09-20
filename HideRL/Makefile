@@ -25,8 +25,8 @@ HideRLess_FILES = \
     SandboxViolationShieldEngine.xm \
     SymbolicLinkShieldEngine.x
 
-HideRLess_FRAMEWORKS = UIKit Foundation Security Preferences
-HideRLess_PRIVATE_FRAMEWORKS = 
+HideRLess_FRAMEWORKS = UIKit Foundation Security
+HideRLess_PRIVATE_FRAMEWORKS = Preferences
 HideRLess_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/application.mk
