@@ -6,7 +6,7 @@
 #import <mach/vm_map.h>
 
 #define KELEN_MEM_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_MEM_LOG(fmt, ...) NSLog((@"HideRLess-MemoryEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_MEM_LOG(fmt, ...) NSLog(@"HideRLess-MemoryEngine: " fmt, ##__VA_ARGS__)
 
 @interface MemoryProtectionEngine : NSObject {
     BOOL _memShieldActive;
@@ -54,7 +54,7 @@ static void MemPreferencesChanged(CFNotificationCenterRef center, void *observer
         if (prefs) {
             _memShieldActive = prefs[@"KelenMemoryProtection"] ? [prefs[@"KelenMemoryProtection"] boolValue] : YES;
             if (_memShieldActive) {
-                KELEN_MEM_LOG:@"[MemoryProtection] Đã kích hoạt bảo vệ vùng nhớ và chống quét RAM cấp thấp.";
+                KELEN_MEM_LOG(@"[MemoryProtection] Đã kích hoạt bảo vệ vùng nhớ và chống quét RAM cấp thấp.");
             }
         } else {
             _memShieldActive = YES;
@@ -76,7 +76,7 @@ static void MemPreferencesChanged(CFNotificationCenterRef center, void *observer
     if ([[MemoryProtectionEngine sharedInstance] isMemoryShieldEnabled]) {
         // Nếu tiến trình khác cố gắng đọc vùng nhớ nhạy cảm của app, trả về lỗi quyền truy cập
         if (target_task == mach_task_self()) {
-            KELEN_MEM_LOG:@"[Blocked] Đã ngăn chặn yêu cầu đọc vùng nhớ từ bên ngoài tại địa chỉ: %llx", address];
+            KELEN_MEM_LOG(@"[Blocked] Đã ngăn chặn yêu cầu đọc vùng nhớ từ bên ngoài tại địa chỉ: %llx", address);
             return KERN_PROTECTION_FAILURE;
         }
     }
@@ -95,6 +95,6 @@ static void MemPreferencesChanged(CFNotificationCenterRef center, void *observer
 %ctor {
     @autoreleasepool {
         [MemoryProtectionEngine sharedInstance];
-        KELEN_MEM_LOG:@"[Init] Mô-đun MemoryProtectionEngine đã sẵn sàng hoạt động.";
+        KELEN_MEM_LOG(@"[Init] Mô-đun MemoryProtectionEngine đã sẵn sàng hoạt động.");
     }
 }
