@@ -8,7 +8,6 @@ APPLICATION_NAME = HideRLess
 # Khai báo các file ở thư mục gốc
 HideRLess_FILES = \
     Kelen_CoreEngine.m \
-    Kelen_MasterSync.h \
     Kelen_Tweak.x \
     mod_antidebug.m \
     mod_dyld.m \
