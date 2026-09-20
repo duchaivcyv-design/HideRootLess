@@ -1,0 +1,9 @@
+Package: com.kelen.deepbypass
+Name: KelenDeepBypass
+Version: 0.0.1
+Architecture: iphoneos-arm64
+Description: Advanced Rootless Jailbreak Bypass chong MBBank va Game cho iOS 12-16.
+Maintainer: Kelen
+Author: Kelen
+Section: Security
+Depends: mobilesubstrate (>= 0.9.5000), ellekit
