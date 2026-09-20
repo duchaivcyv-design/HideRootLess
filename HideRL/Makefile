@@ -1,4 +1,5 @@
 TARGET := iphone:clang:latest:14.0
+ARCHS = arm64
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
@@ -13,7 +14,7 @@ HideRLess_FILES = \
     DYLDInterceptionEngine.xm \
     DeviceIdentifierMaskEngine.x \
     EnvironmentShieldEngine.x \
-    HideAppController.m \
+    UIViewController \
     HideAppManagerEngine.x \
     HideRLessCore.m \
     HookGuardEngine.xm \
