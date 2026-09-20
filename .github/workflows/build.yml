@@ -8,28 +8,35 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13  # Hoặc dùng ubuntu-latest bên dưới nếu muốn dùng Linux
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Install Theos & Dependencies (Linux Environment)
+    - name: Install System Dependencies & Tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang ldid make git curl dpkg-dev
-        
-        # Cài đặt Theos chuẩn
+        sudo apt-get install -y clang make git curl dpkg-dev xz-utils bzip2 libxml2-utils
+
+    - name: Setup Theos Environment
+      run: |
         export THEOS=~/theos
         git clone --recursive https://github.com/theos/theos.git $THEOS
-        
-        # Cài đặt toolchain (SDK / iPhoneOS SDK)
-        sudo git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
+
+        # Cài đặt ldid chuẩn cho Linux từ Procursus / Theos toolchain
+        sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
+        sudo chmod +x /usr/local/bin/ldid
+
+        # Cài đặt đầy đủ các phiên bản iPhoneOS SDKs
+        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
-        export PATH=$THEOS/bin:$PATH
+        export PATH=$THEOS/bin:/usr/local/bin:$PATH
+        
+        # Thực hiện clean và build toàn bộ cấu trúc multi-directory (KelenCore + HideApp)
         make clean
         make package
 
