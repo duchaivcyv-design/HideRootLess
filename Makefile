@@ -5,34 +5,27 @@ include $(THEOS)/makefiles/common.mk
 
 APPLICATION_NAME = HideRLess
 
-# Khai báo các file ở thư mục gốc và các thư mục con (Subdirectories)
+# Khai báo các file ở thư mục gốc
 HideRLess_FILES = \
-    main.m \
-    HideRLessCore.m \
-    BypassDashboardController.m \
-    BypassCoreEngine.m \
-    AntiDebuggingEngine.m \
-    EnvironmentShieldEngine.m \
-    NetworkInterceptEngine.m \
-    MemoryProtectionEngine.m \
-    DeviceIdentifierMaskEngine.m \
-    KeychainProtectionEngine.m \
-    SandboxEscapeShieldEngine.m \
-    ProcessHidingEngine.m \
-    SymbolicLinkShieldEngine.m \
-    HookGuardEngine.xm \
-    DYLDInterceptionEngine.xm \
-    SandboxViolationShieldEngine.xm
+    Kelen_CoreEngine.m \
+    Kelen_MasterSync.h \
+    Kelen_Tweak.x \
+    mod_antidebug.m \
+    mod_dyld.m \
+    mod_filesystem.m \
+    mod_syscall.m
 
-# Nếu bạn có tạo các thư mục con chứa mã nguồn riêng (ví dụ thư mục Engines hoặc Controllers), 
-# bạn có thể gom đường dẫn vào đây:
-# Subdirectories/EngineFiles.m
+# Khai báo đủ toàn bộ các thư mục con có trong kho lưu trữ
+SUBPROJECTS += HideApp
+SUBPROJECTS += HideRL
+SUBPROJECTS += KelenCore
+SUBPROJECTS += KelenBootstrapLoader
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
 HideRLess_PRIVATE_FRAMEWORKS = 
 HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
 
-# Trỏ đến file entitlements mở rộng nickchan.entitlements mà bạn vừa tạo
+# Trỏ đến file entitlements mở rộng nickchan.entitlements
 HideRLess_ENTITLEMENTS = nickchan.entitlements
 
 include $(THEOS_MAKE_PATH)/application.mk
