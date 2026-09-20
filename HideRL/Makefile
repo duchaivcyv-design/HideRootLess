@@ -1,30 +1,35 @@
 TARGET := iphone:clang:latest:14.0
-INSTALL_TARGET_PROCESSES = SpringBoard
-
 include $(THEOS)/makefiles/common.mk
 
 APPLICATION_NAME = HideRLess
 
+# Đã liệt kê chính xác 100% các file .m và .xm dựa theo hình ảnh thư mục HideApp của bạn
 HideRLess_FILES = \
-    main.m \
-    BypassDashboardController.m \
-    BypassCoreEngine.m \
     AntiDebuggingEngine.m \
-    EnvironmentShieldEngine.m \
-    NetworkInterceptEngine.m \
-    MemoryProtectionEngine.m \
-    DeviceIdentifierMaskEngine.m \
-    KeychainProtectionEngine.m \
-    SandboxEscapeShieldEngine.m \
-    ProcessHidingEngine.m \
-    SymbolicLinkShieldEngine.m \
-    HookGuardEngine.xm \
+    BypassCoreEngine.m \
+    BypassDashboardController.m \
     DYLDInterceptionEngine.xm \
-    SandboxViolationShieldEngine.xm
+    DeviceIdentifierMaskEngine.m \
+    EnvironmentShieldEngine.m \
+    HideAppController.m \
+    HideAppManagerEngine.m \
+    HideRLessCore.m \
+    HookGuardEngine.xm \
+    KeychainProtectionEngine.m \
+    MemoryProtectionEngine.m \
+    NetworkInterceptEngine.m \
+    ProcessHidingEngine.m \
+    SandboxEscapeShieldEngine.m \
+    SandboxViolationShieldEngine.xm \
+    SymbolicLinkShieldEngine.m \
+    main.m
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
-HideRLess_PRIVATE_FRAMEWORKS = 
-HideRLess_CFLAGS = -fobjc-arc
+HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
+
+# Vì file nickchan.entitlements của bạn nằm ở thư mục gốc, 
+# ta cần thêm "../" để Theos lùi ra ngoài 1 cấp và lấy file đó
+HideRLess_ENTITLEMENTS = ../nickchan.entitlements
 
 include $(THEOS_MAKE_PATH)/application.mk
 
