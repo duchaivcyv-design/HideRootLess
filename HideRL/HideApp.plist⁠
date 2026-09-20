@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Danh sách Ứng dụng Quản lý Ẩn</string>
+			<key>footerText</key>
+			<string>Chọn ứng dụng bên dưới để áp dụng cơ chế che giấu toàn bộ dấu vết Jailbreak của HideRLess.</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>HideApp Manager</string>
+</dict>
+</plist>
