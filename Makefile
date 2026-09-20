@@ -15,7 +15,7 @@ HideRLess_FILES = \
     $(wildcard HideRL/*.c) \
     $(wildcard HideRL/*.cpp)
 
-HideRLess_FRAMEWORKS = UIKit Foundation Security
+HideRLess_FRAMEWORKS = UIKit Foundation
 HideRLess_PRIVATE_FRAMEWORKS = Preferences
 
 HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -IHideRL -F$(THEOS)/vendor/lib/ -F$(THEOS)/sdk/iPhoneOS.sdk/System/Library/PrivateFrameworks/
