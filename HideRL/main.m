@@ -203,15 +203,15 @@ static void OnMasterPrefsChanged(CFNotificationCenterRef center, void *observer,
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    KELEN_MAIN_LOG:@"[State] Ứng dụng đã đi vào chế độ nền (Background).";
+    KELEN_MAIN_LOG(@"[State] Ứng dụng đã đi vào chế độ nền (Background).");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    KELEN_MAIN_LOG:@"[State] Ứng dụng quay trở lại giao diện phía trước (Foreground).";
+    KELEN_MAIN_LOG(@"[State] Ứng dụng quay trở lại giao diện phía trước (Foreground).");
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    KELEN_MAIN_LOG:@"[State] Ứng dụng đang hoạt động bình thường (Active).";
+    KELEN_MAIN_LOG(@"[State] Ứng dụng đang hoạt động bình thường (Active).");
 }
 
 @end
