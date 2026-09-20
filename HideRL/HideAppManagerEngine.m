@@ -6,7 +6,7 @@
 #import <dlfcn.h>
 
 #define KELEN_PREFS_PATH @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_LOG(fmt, ...) NSLog((@"HideRLess-HideAppEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_LOG(fmt, ...) NSLog(@"HideRLess-HideAppEngine: " fmt, ##__VA_ARGS__)
 
 // Khai báo cấu trúc quản lý trạng thái runtime cho HideApp
 @interface HideAppManagerEngine : NSObject {
@@ -67,7 +67,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
             _isTargetHidden = (globalMode && appSpecificHide);
             
             if (_isTargetHidden) {
-                KELEN_LOG:@"[CRITICAL] Phân hệ HideApp đã kích hoạt che giấu hoàn toàn cho tiến trình: %@", _currentBundleID];
+                KELEN_LOG(@"[CRITICAL] Phân hệ HideApp đã kích hoạt che giấu hoàn toàn cho tiến trình: %@", _currentBundleID);
             }
         }
     }
@@ -145,6 +145,6 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
     @autoreleasepool {
         // Kích hoạt engine quản lý ngay từ giây đầu tiên khởi động tiến trình
         [HideAppManagerEngine sharedInstance];
-        KELEN_LOG:@"[HideAppEngine] Đã nạp thành công toàn bộ module bảo vệ nâng cao.";
+        KELEN_LOG(@"[HideAppEngine] Đã nạp thành công toàn bộ module bảo vệ nâng cao.");
     }
 }
