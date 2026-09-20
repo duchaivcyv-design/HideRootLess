@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Cho phép gỡ lỗi và gắn tiến trình (Debugging & Task Control) -->
+    <key>get-task-allow</key>
+    <true/>
+    
+    <!-- Cấp quyền ứng dụng hệ thống cấp cao (Platform Application) -->
+    <key>platform-application</key>
+    <true/>
+    
+    <!-- Cho phép truy cập các API riêng tư của iOS (Private APIs) -->
+    <key>com.apple.security.private-apis</key>
+    <true/>
+    
+    <!-- Vô hiệu hóa vùng cô lập Sandbox để ứng dụng có thể đọc/ghi tệp cấu hình toàn cục -->
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+    
+    <!-- Quyền quản lý và giám sát tiến trình hệ thống (Process Management & Debugging) -->
+    <key>com.apple.private.security.container-required</key>
+    <false/>
+    
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <key>com.apple.security.network.server</key>
+    <true/>
+    
+    <!-- Cho phép truy cập keychain chia sẻ và dữ liệu hệ thống -->
+    <key>keychain-access-groups</key>
+    <array>
+        <string>*</string>
+    </array>
+</dict>
+</plist>
