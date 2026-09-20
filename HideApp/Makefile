@@ -1,17 +1,15 @@
-TARGET := iphone:clang:latest:12.0
-ARCHS = arm64 arm64e
+TARGET := iphone:clang:16.5:12.0
+ARCHS := arm64
 
 include $(THEOS)/makefiles/common.mk
 
-APPLICATION_NAME = KelenHideApp
+BUNDLE_NAME := HideAppManager
 
-# Khai báo các file của App (Giao diện, quét AppStore, đồng bộ config)
-KelenHideApp_FILES = \
-    HideAppMain.m \
-    AppScanner.m \
-    ConfigSync.m
+HideAppManager_FILES := HideAppController.m HideAppFilter.m
+HideAppManager_INSTALL_PATH := /Library/PreferenceLoader/Preferences
+HideAppManager_FRAMEWORKS := UIKit Foundation
+HideAppManager_PRIVATE_FRAMEWORKS := Preferences
+HideAppManager_CFLAGS = -fobjc-arc
 
-KelenHideApp_FRAMEWORKS = UIKit Foundation
-KelenHideApp_CFLAGS = -fobjc-arc
-
-include $(THEOS_MAKE_PATH)/application.mk
+include $(THEOS_MAKE_PATH)/bundle.info.mk
+include $(THEOS_MAKE_PATH)/bundle.mk
