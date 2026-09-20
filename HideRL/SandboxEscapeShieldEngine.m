@@ -5,7 +5,7 @@
 #import <sys/stat.h>
 
 #define KELEN_SANDBOX_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_SANDBOX_LOG(fmt, ...) NSLog((@"HideRLess-SandboxEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_SANDBOX_LOG(fmt, ...) NSLog(@"HideRLess-SandboxEngine: " fmt, ##__VA_ARGS__)
 
 @interface SandboxEscapeShieldEngine : NSObject {
     BOOL _sandboxShieldActive;
@@ -53,7 +53,7 @@ static void SandboxPreferencesChanged(CFNotificationCenterRef center, void *obse
         if (prefs) {
             _sandboxShieldActive = prefs[@"KelenSandboxEscapeShield"] ? [prefs[@"KelenSandboxEscapeShield"] boolValue] : YES;
             if (_sandboxShieldActive) {
-                KELEN_SANDBOX_LOG:@"[SandboxEscapeShield] Đã kích hoạt cơ chế bảo vệ và kiểm soát ranh giới Sandbox.";
+                KELEN_SANDBOX_LOG(@"[SandboxEscapeShield] Đã kích hoạt cơ chế bảo vệ và kiểm soát ranh giới Sandbox.");
             }
         } else {
             _sandboxShieldActive = YES;
@@ -77,7 +77,7 @@ static void SandboxPreferencesChanged(CFNotificationCenterRef center, void *obse
     if (path && [[SandboxEscapeShieldEngine sharedInstance] isSandboxShieldEnabled]) {
         if ([path hasPrefix:@"/private/var/mobile/Containers/Data/Application"] == NO && 
             ([path containsString:@"/jb"] || [path containsString:@"/Library/MobileSubstrate"])) {
-            KELEN_SANDBOX_LOG:@"[Blocked] Đã chặn yêu cầu đọc tệp ngoài phạm vi Sandbox tại đường dẫn: %@", path];
+            KELEN_SANDBOX_LOG(@"[Blocked] Đã chặn yêu cầu đọc tệp ngoài phạm vi Sandbox tại đường dẫn: %@", path);
             if (error) {
                 *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:nil];
             }
@@ -94,7 +94,7 @@ static void SandboxPreferencesChanged(CFNotificationCenterRef center, void *obse
 - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)useAuxiliaryFile encoding:(NSStringEncoding)enc error:(NSError **)error {
     if (path && [[SandboxEscapeShieldEngine sharedInstance] isSandboxShieldEnabled]) {
         if ([path containsString:@"/var/jb"] || [path containsString:@"/Library/MobileSubstrate"]) {
-            KELEN_SANDBOX_LOG:@"[Blocked] Đã chặn hành vi ghi tệp trái phép ra ngoài vùng Sandbox tại: %@", path];
+            KELEN_SANDBOX_LOG(@"[Blocked] Đã chặn hành vi ghi tệp trái phép ra ngoài vùng Sandbox tại: %@", path);
             return NO;
         }
     }
@@ -106,6 +106,6 @@ static void SandboxPreferencesChanged(CFNotificationCenterRef center, void *obse
 %ctor {
     @autoreleasepool {
         [SandboxEscapeShieldEngine sharedInstance];
-        KELEN_SANDBOX_LOG:@"[Init] Mô-đun SandboxEscapeShieldEngine đã sẵn sàng hoạt động.";
+        KELEN_SANDBOX_LOG(@"[Init] Mô-đun SandboxEscapeShieldEngine đã sẵn sàng hoạt động.");
     }
 }
