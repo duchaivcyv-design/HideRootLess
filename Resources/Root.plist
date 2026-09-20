@@ -2,48 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>en</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.kelen.deepbypass</string>
+    <key>CFBundleName</key>
+    <string>HideRLess</string>
     <key>CFBundleDisplayName</key>
     <string>HideRLess</string>
     <key>CFBundleExecutable</key>
     <string>HideRLess</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.kelen.hiderless</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>HideRLess</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
-    <key>CFBundleSupportedPlatforms</key>
-    <array>
-        <string>iPhoneOS</string>
-    </array>
-    <key>CFBundleVersion</key>
     <string>1.0</string>
-    <key>LSRequiresIPhoneOS</key>
-    <true/>
     <key>MinimumOSVersion</key>
     <string>14.0</string>
-    <key>UIDeviceFamily</key>
-    <array>
-        <integer>1</integer>
-        <integer>2</integer>
-    </array>
-    <key>UILaunchStoryboardName</key>
-    <string></string>
-    <key>UIRequiredDeviceCapabilities</key>
-    <array>
-        <string>armv7</string>
-    </array>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
 </dict>
 </plist>
