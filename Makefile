@@ -1,28 +1,41 @@
-TARGET := iphone:clang:latest:12.0
-ARCHS = arm64 arm64e
+TARGET := iphone:clang:latest:14.0
+INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = KelenDeepBypass
+APPLICATION_NAME = HideRLess
 
-# Khai báo ĐẦY ĐỦ hơn 10 file cốt lõi ở thư mục gốc để đồng bộ biên dịch
-KelenDeepBypass_FILES = \
-    Kelen_CoreEngine.m \
-    Kelen_Tweak.x \
-    mod_syscall_hook.m \
-    mod_kernel_bypass.m \
-    mod_filesystem_stat.m \
-    mod_filesystem_open.m \
-    mod_dyld_images.m \
-    mod_antidebug_ptrace.m \
-    mod_sandbox_virtual.m \
-    mod_objc_runtime.m \
-    fishhook.c
+# Khai báo các file ở thư mục gốc và các thư mục con (Subdirectories)
+HideRLess_FILES = \
+    main.m \
+    HideRLessCore.m \
+    BypassDashboardController.m \
+    BypassCoreEngine.m \
+    AntiDebuggingEngine.m \
+    EnvironmentShieldEngine.m \
+    NetworkInterceptEngine.m \
+    MemoryProtectionEngine.m \
+    DeviceIdentifierMaskEngine.m \
+    KeychainProtectionEngine.m \
+    SandboxEscapeShieldEngine.m \
+    ProcessHidingEngine.m \
+    SymbolicLinkShieldEngine.m \
+    HookGuardEngine.xm \
+    DYLDInterceptionEngine.xm \
+    SandboxViolationShieldEngine.xm
 
-KelenDeepBypass_CFLAGS = -fobjc-arc -Wno-deprecated-declarations
+# Nếu bạn có tạo các thư mục con chứa mã nguồn riêng (ví dụ thư mục Engines hoặc Controllers), 
+# bạn có thể gom đường dẫn vào đây:
+# Subdirectories/EngineFiles.m
 
-include $(THEOS_MAKE_PATH)/tweak.mk
+HideRLess_FRAMEWORKS = UIKit Foundation Security
+HideRLess_PRIVATE_FRAMEWORKS = 
+HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
 
-# Liên kết thư mục con HideApp để khi gõ make package sẽ build luôn cả App quản lý
-SUBPROJECTS += HideApp
-include $(THEOS_MAKE_PATH)/aggregate.mk
+# Trỏ đến file entitlements mở rộng nickchan.entitlements mà bạn vừa tạo
+HideRLess_ENTITLEMENTS = nickchan.entitlements
+
+include $(THEOS_MAKE_PATH)/application.mk
+
+after-install::
+	install.exec "uicache -p /Applications/HideRLess.app"
