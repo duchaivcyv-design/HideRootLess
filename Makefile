@@ -1,21 +1,21 @@
 TARGET := iphone:clang:latest:14.0
-ARCHS = arm64
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
 APPLICATION_NAME = HideRLess
 
+# Trỏ đúng đường dẫn đến file chứa hàm main() thực tế của bạn
 HideRLess_FILES = \
     HideRL/main.m \
     $(wildcard HideRL/*.m) \
-    $(wildcard HideRL/*.x) \
+    $(wildcard HideRL/*.mm) \
     $(wildcard HideRL/*.xm) \
     $(wildcard HideRL/*.c) \
     $(wildcard HideRL/*.cpp)
 
-HideRLess_FRAMEWORKS = UIKit Foundation
-HideRLess_PRIVATE_FRAMEWORKS = Preferences
+HideRLess_FRAMEWORKS = UIKit Foundation Security
+HideRLess_PRIVATE_FRAMEWORKS = 
 
 HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -IHideRL
 
