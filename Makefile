@@ -10,7 +10,7 @@ APPLICATION_NAME = HideRLess
 HideRLess_FILES = \
     HideRL/main.m \
     $(wildcard HideRL/*.m) \
-    $(wildcard HideRL/*.mm) \
+    $(wildcard HideRL/*.x) \
     $(wildcard HideRL/*.xm) \
     $(wildcard HideRL/*.c) \
     $(wildcard HideRL/*.cpp)
