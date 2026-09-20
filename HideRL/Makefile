@@ -14,7 +14,6 @@ HideRLess_FILES = \
     DYLDInterceptionEngine.xm \
     DeviceIdentifierMaskEngine.x \
     EnvironmentShieldEngine.x \
-    UIViewController \
     HideAppManagerEngine.x \
     HideRLessCore.m \
     HookGuardEngine.xm \
