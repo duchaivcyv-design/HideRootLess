@@ -1,22 +1,18 @@
 #import "Kelen_MasterSync.h"
 #import "fishhook.h"
 
-// Khai báo con trỏ hàm gốc
 static int (*orig_stat)(const char *restrict path, struct stat *restrict buf);
 static int (*orig_lstat)(const char *restrict path, struct stat *restrict buf);
 static int (*orig_access)(const char *path, int amode);
 static FILE * (*orig_fopen)(const char *restrict filename, const char *restrict mode);
 static int (*orig_open)(const char *path, int oflag, ...);
 
-// Hàm kiểm tra đường dẫn nhạy cảm cần ẩn
 static BOOL kelen_is_forbidden_path(const char *path) {
     if (path == NULL) return NO;
     
-    // Chuyển đổi an toàn sang NSString để kiểm tra chuỗi linh hoạt
     NSString *pathStr = [NSString stringWithUTF8String:path];
     if (!pathStr) return NO;
 
-    // Danh sách các từ khóa đặc trưng của Jailbreak Rootless và Rootful cần che giấu
     NSArray *forbiddenKeywords = @[
         @"/var/jb",
         @"/usr/bin/su",
@@ -27,7 +23,6 @@ static BOOL kelen_is_forbidden_path(const char *path) {
         @"/Applications/Zebra.app",
         @"/var/lib/dpkg",
         @"/var/stash",
-        @".paralell",
         @"palera1n",
         @"dopamine"
     ];
@@ -40,16 +35,14 @@ static BOOL kelen_is_forbidden_path(const char *path) {
     return NO;
 }
 
-// Thay thế hàm stat
 static int kelen_replaced_stat(const char *restrict path, struct stat *restrict buf) {
     if (kelen_is_forbidden_path(path)) {
-        errno = ENOENT; // Báo lỗi file không tồn tại
+        errno = ENOENT;
         return -1;
     }
     return orig_stat(path, buf);
 }
 
-// Thay thế hàm lstat
 static int kelen_replaced_lstat(const char *restrict path, struct stat *restrict buf) {
     if (kelen_is_forbidden_path(path)) {
         errno = ENOENT;
@@ -58,7 +51,6 @@ static int kelen_replaced_lstat(const char *restrict path, struct stat *restrict
     return orig_lstat(path, buf);
 }
 
-// Thay thế hàm access
 static int kelen_replaced_access(const char *path, int amode) {
     if (kelen_is_forbidden_path(path)) {
         errno = ENOENT;
@@ -67,7 +59,6 @@ static int kelen_replaced_access(const char *path, int amode) {
     return orig_access(path, amode);
 }
 
-// Thay thế hàm fopen
 static FILE * kelen_replaced_fopen(const char *restrict filename, const char *restrict mode) {
     if (kelen_is_forbidden_path(filename)) {
         errno = ENOENT;
@@ -76,23 +67,24 @@ static FILE * kelen_replaced_fopen(const char *restrict filename, const char *re
     return orig_fopen(filename, mode);
 }
 
-// Thay thế hàm open
 static int kelen_replaced_open(const char *path, int oflag, ...) {
     if (kelen_is_forbidden_path(path)) {
         errno = ENOENT;
         return -1;
     }
     
-    // Xử lý biến động (variadic arguments) cho hàm open
     va_list args;
     va_start(args, oflag);
-    int mode = 0;
+    int result;
     if (oflag & O_CREAT) {
-        mode = va_arg(args, int);
+        mode_t mode = va_arg(args, int);
+        result = orig_open(path, oflag, mode);
+    } else {
+        result = orig_open(path, oflag);
     }
     va_end(args);
     
-    return orig_open(path, oflag, mode);
+    return result;
 }
 
 void Init_Mod_FileSystem(void) {
