@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<!-- NHÓM 1: MÔ-ĐUN HOOK & BYPASS -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Cấu hình Mô-đun Hook &amp; Bypass</string>
+			<key>footerText</key>
+			<string>Đồng bộ trực tiếp trạng thái kiểm soát qua Kelen_MasterSync.h</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>KelenHookAntiDebug</string>
+			<key>label</key>
+			<string>Chặn Gỡ lỗi &amp; Phát hiện (Anti-Debug)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>KelenHookDyld</string>
+			<key>label</key>
+			<string>Ẩn Thư viện Động Dyld &amp; Ellekit</string>
+		</dict>
+
+		<!-- NHÓM 2: FILE SYSTEM & KERNEL -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Ảo hóa Hệ thống Tệp tin (File System)</string>
+			<key>footerText</key>
+			<string>Che giấu tuyệt đối các đường dẫn rootless và thông tin kernel</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>KelenHookFileSystem</string>
+			<key>label</key>
+			<string>Ẩn Thư mục Rootless (/var/jb)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>KelenHookSysctl</string>
+			<key>label</key>
+			<string>Lọc Lệnh Trạng thái Sysctl</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>KelenStockEmulation</string>
+			<key>label</key>
+			<string>Giả lập Hồ sơ Thiết bị Nguyên bản</string>
+		</dict>
+
+		<!-- NHÓM 3: QUẢN TRỊ & BẢO TRÌ -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Quản trị &amp; Bảo trì Hệ thống</string>
+			<key>footerText</key>
+			<string>Các tác vụ dọn dẹp và áp dụng cấu hình nhanh</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>handleClearCacheAction:</string>
+			<key>label</key>
+			<string>Xóa Sạch Bộ nhớ Tạm (Cache)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>handleRespringAction:</string>
+			<key>label</key>
+			<string>Áp dụng &amp; Làm mới (Respring)</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Cấu hình Nâng cao</string>
+</dict>
+</plist>
