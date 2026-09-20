@@ -12,18 +12,18 @@ HideRLess_FILES = \
     BypassDashboardController.m \
     DYLDInterceptionEngine.m \
     DeviceIdentifierMaskEngine.x \
-    EnvironmentShieldEngine.m \
+    EnvironmentShieldEngine.x \
     HideAppController.m \
     HideAppManagerEngine.m \
     HideRLessCore.m \
     HookGuardEngine.xm \
-    KeychainProtectionEngine.m \
-    MemoryProtectionEngine.m \
-    NetworkInterceptEngine.m \
-    ProcessHidingEngine.m \
-    SandboxEscapeShieldEngine.m \
+    KeychainProtectionEngine.x \
+    MemoryProtectionEngine.x \
+    NetworkInterceptEngine.x \
+    ProcessHidingEngine.x \
+    SandboxEscapeShieldEngine.x \
     SandboxViolationShieldEngine.xm \
-    SymbolicLinkShieldEngine.m
+    SymbolicLinkShieldEngine.x
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
 HideRLess_PRIVATE_FRAMEWORKS = 
