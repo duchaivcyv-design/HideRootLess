@@ -19,27 +19,28 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y clang make git curl dpkg-dev xz-utils bzip2 libxml2-utils
 
-    - name: Setup Theos Environment
+    - name: Setup Theos Environment & SDKs
       run: |
         export THEOS=~/theos
         rm -rf $THEOS
+        
+        # 1. Clone Theos chính chủ
         git clone --recursive https://github.com/theos/theos.git $THEOS
 
-        # Cài đặt ldid chuẩn cho Linux
+        # 2. Cài đặt ldid chuẩn cho Linux
         sudo curl -o /usr/local/bin/ldid -sL https://github.com/theos/ldid/releases/download/v2.1.5-procursus7/ldid-linux-x86_64
         sudo chmod +x /usr/local/bin/ldid
 
-        # Cài đặt iPhoneOS SDKs
-        if [ ! -d "$THEOS/sdks" ]; then
-          git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
-        fi
+        # 3. Clone trực tiếp bộ SDKs của Apple vào đúng thư mục theos/sdks
+        rm -rf $THEOS/sdks
+        git clone --recursive https://github.com/theos/sdks.git $THEOS/sdks
 
     - name: Clean and Build Package
       run: |
         export THEOS=~/theos
         export PATH=$THEOS/bin:/usr/local/bin:$PATH
         
-        # Dọn dẹp và tiến hành build toàn bộ dự án đa cấp (KelenCore + HideApp)
+        # Build toàn bộ dự án đa cấp (KelenCore + HideApp)
         make clean
         make package
 
