@@ -5,18 +5,20 @@ include $(THEOS)/makefiles/common.mk
 
 APPLICATION_NAME = HideRLess
 
-# Giữ main.m ở gốc và tự động quét sạch mọi file code bên trong thư mục HideRL
-HideRLess_FILES = main.m \
-                  $(wildcard HideRL/*.m) \
-                  $(wildcard HideRL/*.mm) \
-                  $(wildcard HideRL/*.xm) \
-                  $(wildcard HideRL/*.c) \
-                  $(wildcard HideRL/*.cpp)
+# Thay 'main.m' bằng tên file thực tế có chứa hàm main() của bạn (ví dụ: HideRLessCore.m)
+# Và tự động quét toàn bộ file bên trong thư mục HideRL
+HideRLess_FILES = \
+    HideRLessCore.m \
+    $(wildcard HideRL/*.m) \
+    $(wildcard HideRL/*.mm) \
+    $(wildcard HideRL/*.xm) \
+    $(wildcard HideRL/*.c) \
+    $(wildcard HideRL/*.cpp)
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
 HideRLess_PRIVATE_FRAMEWORKS = 
 
-# Thêm đường dẫn -IHideRL để các file trong thư mục đó có thể #import header của nhau
+# Khai báo đường dẫn include để các file nhận diện lẫn nhau
 HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -IHideRL
 
 HideRLess_ENTITLEMENTS = nickchan.entitlements
