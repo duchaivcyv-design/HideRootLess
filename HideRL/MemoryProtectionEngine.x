@@ -4,7 +4,6 @@
 #import <notify.h>
 #import <mach/mach.h>
 #import <mach/vm_map.h>
-#import <mach/mach_vm.h>
 
 #define KELEN_MEM_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
 #define KELEN_MEM_LOG(fmt, ...) NSLog(@"HideRLess-MemoryEngine: " fmt, ##__VA_ARGS__)
@@ -70,23 +69,13 @@ static void MemPreferencesChanged(CFNotificationCenterRef center, void *observer
 @end
 
 // ============================================================================
-// HỆ THỐNG HOOK MACH VM ĐỂ NGĂN CHẶN ĐỌC HOẶC GHI VÙNG NHỚ TIẾN TRÌNH
+// HỆ THỐNG HOOK VM ĐỂ NGĂN CHẶN ĐỌC VÙNG NHỚ TIẾN TRÌNH
 // ============================================================================
-
-%hookf(kern_return_t, mach_vm_read, vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_offset_t *data, mach_msg_type_number_t *dataCnt) {
-    if ([[MemoryProtectionEngine sharedInstance] isMemoryShieldEnabled]) {
-        // Nếu tiến trình khác cố gắng đọc vùng nhớ nhạy cảm của app, trả về lỗi quyền truy cập
-        if (target_task == mach_task_self()) {
-            KELEN_MEM_LOG(@"[Blocked] Đã ngăn chặn yêu cầu đọc vùng nhớ từ bên ngoài tại địa chỉ: %llx", address);
-            return KERN_PROTECTION_FAILURE;
-        }
-    }
-    return %orig(target_task, address, size, data, dataCnt);
-}
 
 %hookf(kern_return_t, vm_read, vm_map_t target_task, vm_address_t address, vm_size_t size, vm_offset_t *data, mach_msg_type_number_t *dataCnt) {
     if ([[MemoryProtectionEngine sharedInstance] isMemoryShieldEnabled]) {
         if (target_task == mach_task_self()) {
+            KELEN_MEM_LOG(@"[Blocked] Đã ngăn chặn yêu cầu đọc vùng nhớ tại địa chỉ: %lx", (unsigned long)address);
             return KERN_PROTECTION_FAILURE;
         }
     }
