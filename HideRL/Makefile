@@ -8,7 +8,7 @@ APPLICATION_NAME = HideRLess
 HideRLess_FILES = \
     main.m \
     AntiDebuggingEngine.m \
-    BypassCoreEngine.m \
+    BypassCoreEngine.x \
     BypassDashboardController.m \
     DYLDInterceptionEngine.m \
     DeviceIdentifierMaskEngine.m \
