@@ -1,32 +1,13 @@
-TARGET := iphone:clang:latest:14.0
-ARCHS = arm64
-INSTALL_TARGET_PROCESSES = SpringBoard
+TARGET := iphone:clang:16.5:12.0
+ARCHS := arm64
 
 include $(THEOS)/makefiles/common.mk
 
-APPLICATION_NAME = HideRLess
+APPLICATION_NAME := HideRLess
 
-HideRLess_FILES = \
-    main.m \
-    AntiDebuggingEngine.m \
-    BypassCoreEngine.x \
-    BypassDashboardController.m \
-    DYLDInterceptionEngine.xm \
-    DeviceIdentifierMaskEngine.x \
-    EnvironmentShieldEngine.x \
-    HideAppManagerEngine.x \
-    HideRLessCore.m \
-    HookGuardEngine.xm \
-    KeychainProtectionEngine.x \
-    MemoryProtectionEngine.x \
-    NetworkInterceptEngine.x \
-    ProcessHidingEngine.x \
-    SandboxEscapeShieldEngine.x \
-    SandboxViolationShieldEngine.xm \
-    SymbolicLinkShieldEngine.x
-
-HideRLess_FRAMEWORKS = UIKit Foundation Security
-HideRLess_PRIVATE_FRAMEWORKS = Preferences
-HideRLess_CFLAGS = -fobjc-arc -F$(THEOS)/vendor/lib/ -F$(THEOS)/sdk/iPhoneOS.sdk/System/Library/PrivateFrameworks/
+HideRLess_FILES := $(wildcard HideRL/*.m HideRL/*.x HideRL/*.xm)
+HideRLess_FRAMEWORKS := UIKit Foundation
+HideRLess_PRIVATE_FRAMEWORKS := 
+HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)/HideRL
 
 include $(THEOS_MAKE_PATH)/application.mk
