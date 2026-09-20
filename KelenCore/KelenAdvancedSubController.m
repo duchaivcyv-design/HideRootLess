@@ -1,203 +1,229 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
+#import <Preferences/PSSwitchTableCell.h>
 #import "Kelen_MasterSync.h"
 
-// Khai báo giao diện trang con quản lý chi tiết các mục con (5-7 mục nâng cao)
-@interface KelenAdvancedSubController : PSListController
-@property (nonatomic, strong) NSMutableDictionary *cachedPreferences;
+// Khai báo interface đồng bộ mục con với KelenEngine
+@interface KelenAdvancedSubController : PSListController {
+    BOOL _isSyncingCache;
+}
+@property (nonatomic, strong) NSMutableDictionary *masterPreferencesCache;
+- (void)syncStateWithMasterEngine;
 @end
 
 @implementation KelenAdvancedSubController
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _isSyncingCache = NO;
+        [self syncStateWithMasterEngine];
+    }
+    return self;
+}
+
 - (NSArray *)specifiers {
     if (!_specifiers) {
-        NSMutableArray *specifiers = [NSMutableArray array];
+        NSMutableArray *specs = [array mutableCopy];
+        specs = [NSMutableArray array];
 
-        // --- NHÓM 1: CẤU HÌNH TỔNG QUAN & BẢO MẬT ---
-        PSSpecifier *group1 = [PSSpecifier preferenceSpecifierNamed:@"Bảo mật Hệ thống Nâng cao"
+        // --- SECTION 1: CẤU HÌNH MÓC NỐI (HOOK ENGINE) ---
+        PSSpecifier *group1 = [PSSpecifier preferenceSpecifierNamed:@"Cấu hình Mô-đun Hook & Bypass"
                                                              target:self
                                                                 set:nil
                                                                 get:nil
                                                              detail:Nil
                                                                cell:PSGroupCell
                                                                edit:Nil];
-        [group1 setProperty:@"Quản lý các mô-đun móc nối (hook) cấp thấp và đồng bộ trực tiếp qua Kelen_MasterSync.h" forKey:@"footerText"];
-        [specifiers addObject:group1];
+        [group1 setProperty:@"Đồng bộ trực tiếp trạng thái kiểm soát qua Kelen_MasterSync.h" forKey:@"footerText"];
+        [specs addObject:group1];
 
-        // Mục con 1: Công tắc bật tắt kiểm tra tiến trình hệ thống
-        PSSpecifier *item1 = [PSSpecifier preferenceSpecifierNamed:@"Chặn Phát hiện Tiến trình (Anti-Debugging)"
+        // Item 1: Anti-Debugging Hook
+        PSSpecifier *item1 = [PSSpecifier preferenceSpecifierNamed:@"Chặn Gỡ lỗi & Phát hiện (Anti-Debug)"
                                                              target:self
-                                                                set:@selector(setPrefValue:specifier:)
-                                                                get:@selector(getPrefValue:)
+                                                                set:@selector(setMasterPrefValue:specifier:)
+                                                                get:@selector(getMasterPrefValue:)
                                                              detail:Nil
                                                                cell:PSSwitchCell
                                                                edit:Nil];
         [item1 setProperty:@"KelenHookAntiDebug" forKey:@"identifier"];
         [item1 setProperty:@YES forKey:@"default"];
-        [specifiers addObject:item1];
+        [specs addObject:item1];
 
-        // Mục con 2: Công tắc ẩn danh sách thư viện Dylib / Ellekit
-        PSSpecifier *item2 = [PSSpecifier preferenceSpecifierNamed:@"Ẩn Thư viện Dylib / Ellekit"
+        // Item 2: Dyld Image Hiding
+        PSSpecifier *item2 = [PSSpecifier preferenceSpecifierNamed:@"Ẩn Thư viện Động Dyld & Ellekit"
                                                              target:self
-                                                                set:@selector(setPrefValue:specifier:)
-                                                                get:@selector(getPrefValue:)
+                                                                set:@selector(setMasterPrefValue:specifier:)
+                                                                get:@selector(getMasterPrefValue:)
                                                              detail:Nil
                                                                cell:PSSwitchCell
                                                                edit:Nil];
         [item2 setProperty:@"KelenHookDyld" forKey:@"identifier"];
         [item2 setProperty:@YES forKey:@"default"];
-        [specifiers addObject:item2];
+        [specs addObject:item2];
 
-
-        // --- NHÓM 2: MÔ-ĐUN FILE SYSTEM & ĐƯỜNG DẪN ---
-        PSSpecifier *group2 = [PSSpecifier preferenceSpecifierNamed:@"Bộ lọc Tệp tin & Đường dẫn Ảo hóa"
+        // --- SECTION 2: FILE SYSTEM & KERNEL CHEAT ---
+        PSSpecifier *group2 = [PSSpecifier preferenceSpecifierNamed:@"Ảo hóa Hệ thống Tệp tin (File System)"
                                                              target:self
                                                                 set:nil
                                                                 get:nil
                                                              detail:Nil
                                                                cell:PSGroupCell
                                                                edit:Nil];
-        [group2 setProperty:@"Che giấu triệt để các đường dẫn rootless, thư mục jailbreak và tệp cấu hình hệ thống" forKey:@"footerText"];
-        [specifiers addObject:group2];
+        [group2 setProperty:@"Che giấu tuyệt đối các đường dẫn rootless và thông tin kernel" forKey:@"footerText"];
+        [specs addObject:group2];
 
-        // Mục con 3: Công tắc ẩn đường dẫn Rootless /var/jb
-        PSSpecifier *item3 = [PSSpecifier preferenceSpecifierNamed:@"Ẩn Đường dẫn Rootless (/var/jb)"
+        // Item 3: Rootless Path Hiding
+        PSSpecifier *item3 = [PSSpecifier preferenceSpecifierNamed:@"Ẩn Thư mục Rootless (/var/jb)"
                                                              target:self
-                                                                set:@selector(setPrefValue:specifier:)
-                                                                get:@selector(getPrefValue:)
+                                                                set:@selector(setMasterPrefValue:specifier:)
+                                                                get:@selector(getMasterPrefValue:)
                                                              detail:Nil
                                                                cell:PSSwitchCell
                                                                edit:Nil];
         [item3 setProperty:@"KelenHookFileSystem" forKey:@"identifier"];
         [item3 setProperty:@YES forKey:@"default"];
-        [specifiers addObject:item3];
+        [specs addObject:item3];
 
-        // Mục con 4: Công tắc chặn gọi hàm Sysctl hệ thống
-        PSSpecifier *item4 = [PSSpecifier preferenceSpecifierNamed:@"Chặn Lệnh Sysctl & Trạng thái Kernel"
+        // Item 4: Sysctl Interception
+        PSSpecifier *item4 = [PSSpecifier preferenceSpecifierNamed:@"Lọc Lệnh Trạng thái Sysctl"
                                                              target:self
-                                                                set:@selector(setPrefValue:specifier:)
-                                                                get:@selector(getPrefValue:)
+                                                                set:@selector(setMasterPrefValue:specifier:)
+                                                                get:@selector(getMasterPrefValue:)
                                                              detail:Nil
                                                                cell:PSSwitchCell
                                                                edit:Nil];
         [item4 setProperty:@"KelenHookSysctl" forKey:@"identifier"];
         [item4 setProperty:@YES forKey:@"default"];
-        [specifiers addObject:item4];
+        [specs addObject:item4];
 
-        // Mục con 5: Công tắc giả lập trạng thái thiết bị nguyên bản (Stock Device)
-        PSSpecifier *item5 = [PSSpecifier preferenceSpecifierNamed:@"Giả lập Trạng thái Máy Nguyên bản"
+        // Item 5: Stock Device Profile Emulation
+        PSSpecifier *item5 = [PSSpecifier preferenceSpecifierNamed:@"Giả lập Hồ sơ Thiết bị Nguyên bản"
                                                              target:self
-                                                                set:@selector(setPrefValue:specifier:)
-                                                                get:@selector(getPrefValue:)
+                                                                set:@selector(setMasterPrefValue:specifier:)
+                                                                get:@selector(getMasterPrefValue:)
                                                              detail:Nil
                                                                cell:PSSwitchCell
                                                                edit:Nil];
         [item5 setProperty:@"KelenStockEmulation" forKey:@"identifier"];
         [item5 setProperty:@YES forKey:@"default"];
-        [specifiers addObject:item5];
+        [specs addObject:item5];
 
-
-        // --- NHÓM 3: THAO TÁC HỆ THỐNG & DỌN DẸP ---
-        PSSpecifier *group3 = [PSSpecifier preferenceSpecifierNamed:@"Công cụ Quản trị & Bảo trì"
+        // --- SECTION 3: MAINTENANCE ACTIONS ---
+        PSSpecifier *group3 = [PSSpecifier preferenceSpecifierNamed:@"Quản trị & Bảo trì Hệ thống"
                                                              target:self
                                                                 set:nil
                                                                 get:nil
                                                              detail:Nil
                                                                cell:PSGroupCell
                                                                edit:Nil];
-        [group3 setProperty:@"Thực hiện dọn dẹp bộ nhớ đệm và làm mới SpringBoard ngay lập tức" forKey:@"footerText"];
-        [specifiers addObject:group3];
+        [group3 setProperty:@"Các tác vụ dọn dẹp và áp dụng cấu hình nhanh" forKey:@"footerText"];
+        [specs addObject:group3];
 
-        // Mục con 6: Nút xóa toàn bộ Cache hệ thống bypass (Button Cell)
-        PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ đệm (Cache)"
+        // Item 6: Clear Cache Button
+        PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ Tạm (Cache)"
                                                              target:self
-                                                           selector:@selector(executeClearCacheAction:)
+                                                           selector:@selector(handleClearCacheAction:)
                                                                cell:PSButtonCell
                                                              edit:Nil];
-        [specifiers addObject:item6];
+        [specs addObject:item6];
 
-        // Mục con 7: Nút khởi động lại SpringBoard / Respring (Button Cell)
-        PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Làm mới SpringBoard (Respring)"
+        // Item 7: Respring SpringBoard Button
+        PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Áp dụng & Làm mới (Respring)"
                                                              target:self
-                                                           selector:@selector(executeRespringAction:)
+                                                           selector:@selector(handleRespringAction:)
                                                                cell:PSButtonCell
                                                              edit:Nil];
-        [specifiers addObject:item7];
+        [specs addObject:item7];
 
-        _specifiers = specifiers;
+        _specifiers = specs;
     }
     return _specifiers;
 }
 
-// Phương thức đọc giá trị cấu hình đồng bộ chuẩn từ file .plist thông qua macro
-- (id)getPrefValue:(PSSpecifier *)specifier {
+- (void)syncStateWithMasterEngine {
+    @autoreleasepool {
+        _isSyncingCache = YES;
+        NSDictionary *loadedPrefs = [NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH];
+        if (loadedPrefs) {
+            self.masterPreferencesCache = [loadedPrefs mutableCopy];
+        } else {
+            self.masterPreferencesCache = [NSMutableDictionary dictionary];
+        }
+        _isSyncingCache = NO;
+    }
+}
+
+- (id)getMasterPrefValue:(PSSpecifier *)specifier {
     NSString *key = [specifier propertyForKey:@"identifier"];
     if (!key) return @YES;
 
     @autoreleasepool {
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH];
-        if (prefs && prefs[key]) {
-            return prefs[key];
+        if (self.masterPreferencesCache[key] != nil) {
+            return self.masterPreferencesCache[key];
+        }
+        
+        NSDictionary *currentPrefs = [NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH];
+        if (currentPrefs && currentPrefs[key] != nil) {
+            self.masterPreferencesCache[key] = currentPrefs[key];
+            return currentPrefs[key];
         }
     }
     
-    id defaultValue = [specifier propertyForKey:@"default"];
-    return defaultValue ? defaultValue : @YES;
+    id defaultVal = [specifier propertyForKey:@"default"];
+    return defaultVal ? defaultVal : @YES;
 }
 
-// Phương thức ghi giá trị cấu hình khi người dùng thay đổi trạng thái Switch
-- (void)setPrefValue:(id)value specifier:(PSSpecifier *)specifier {
+- (void)setMasterPrefValue:(id)value specifier:(PSSpecifier *)specifier {
+    if (_isSyncingCache) return;
+    
     NSString *key = [specifier propertyForKey:@"identifier"];
     if (!key) return;
 
     @autoreleasepool {
-        NSMutableDictionary *prefs = [[NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH] mutableCopy];
-        if (!prefs) {
-            prefs = [NSMutableDictionary dictionary];
-        }
-
-        prefs[key] = value;
-        [prefs writeToFile:KELEN_PREFS_PATH atomically:YES];
-
-        // Gửi thông báo đồng bộ Darwin Notification để Tweak nhận diện thay đổi tức thì
-        CFNotificationCenterPostNotification(
-            CFNotificationCenterGetDarwinNotifyCenter(),
-            CFSTR("com.kelen.masterbypass/ReloadPrefs"),
-            NULL,
-            NULL,
-            YES
-        );
+        self.masterPreferencesCache[key] = value;
         
-        KELEN_LOG:@"Đã cập nhật cấu hình thành công cho khóa: %@ = %@", key, value;
+        NSMutableDictionary *filePrefs = [[NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH] mutableCopy];
+        if (!filePrefs) {
+            filePrefs = [NSMutableDictionary dictionary];
+        }
+        
+        filePrefs[key] = value;
+        [filePrefs writeToFile:KELEN_PREFS_PATH atomically:YES];
+
+        // Gửi thông báo Darwin qua MasterSync Center
+        CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+        CFNotificationCenterPostNotification(center, CFSTR("com.kelen.masterbypass/ReloadPrefs"), NULL, NULL, YES);
+        
+        KELEN_LOG:@"Đã đồng bộ thành công khóa cấu hình: %@ thành giá trị: %@", key, value;
     }
 }
 
-// Hành động thực thi của Mục con 6: Xóa Cache
-- (void)executeClearCacheAction:(PSSpecifier *)specifier {
+- (void)handleClearCacheAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Đang tiến hành dọn dẹp bộ nhớ đệm hệ thống bypass...";
+        KELEN_LOG:@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...";
         
-        // Thêm logic xóa cache thư mục tạm nếu cần thiết
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *tempPath = NSTemporaryDirectory();
-        NSArray *tempFiles = [fileManager contentsOfDirectoryAtPath:tempPath error:nil];
-        for (NSString *file in tempFiles) {
-            [fileManager removeItemAtPath:[tempPath stringByAppendingPathComponent:file] error:nil];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *tmpDir = NSTemporaryDirectory();
+        NSArray *tmpFiles = [fm contentsOfDirectoryAtPath:tmpDir error:nil];
+        for (NSString *file in tmpFiles) {
+            [fm removeItemAtPath:[tmpDir stringByAppendingPathComponent:file] error:nil];
         }
         
-        // Hiển thị thông báo xác nhận thành công đơn giản
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Thành công"
-                                                                       message:@"Đã xóa sạch toàn bộ bộ nhớ đệm cache hệ thống!"
+        [self.masterPreferencesCache removeAllObjects];
+        [fm removeItemAtPath:KELEN_PREFS_PATH error:nil];
+
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Đã đồng bộ & Dọn dẹp"
+                                                                       message:@"Toàn bộ cache hệ thống và cấu hình tạm đã được làm sạch!"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Đồng ý" style:UIAlertActionStyleDefault handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Xác nhận" style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
-// Hành động thực thi của Mục con 7: Respring máy
-- (void)executeRespringAction:(PSSpecifier *)specifier {
+- (void)handleRespringAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Thực thi tiến trình làm mới SpringBoard (Respring)...";
+        KELEN_LOG:@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...";
         
         pid_t pid;
         const char *args[] = {"killall", "backboardd", NULL};
