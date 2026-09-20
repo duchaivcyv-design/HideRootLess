@@ -5,7 +5,7 @@
 #import <mach-o/dyld.h>
 
 #define KELEN_DYLD_PREFS @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
-#define KELEN_DYLD_LOG(fmt, ...) NSLog((@"HideRLess-DYLDEngine: " fmt), ##__VA_ARGS__)
+#define KELEN_DYLD_LOG(fmt, ...) NSLog(@"HideRLess-DYLDEngine: " fmt, ##__VA_ARGS__)
 
 @interface DYLDInterceptionEngine : NSObject {
     BOOL _dyldShieldActive;
@@ -54,7 +54,7 @@ static void DYLDPreferencesChanged(CFNotificationCenterRef center, void *observe
         if (prefs) {
             _dyldShieldActive = prefs[@"KelenDYLDInterception"] ? [prefs[@"KelenDYLDInterception"] boolValue] : YES;
             if (_dyldShieldActive) {
-                KELEN_DYLD_LOG:@"[DYLDInterception] Đã kích hoạt mô-đun kiểm soát và che giấu hình ảnh thư viện động.";
+                KELEN_DYLD_LOG(@"[DYLDInterception] Đã kích hoạt mô-đun kiểm soát và che giấu hình ảnh thư viện động.");
             }
         } else {
             _dyldShieldActive = YES;
@@ -111,6 +111,6 @@ static void DYLDPreferencesChanged(CFNotificationCenterRef center, void *observe
 %ctor {
     @autoreleasepool {
         [DYLDInterceptionEngine sharedInstance];
-        KELEN_DYLD_LOG:@"[Init] Mô-đun DYLDInterceptionEngine đã sẵn sàng hoạt động.";
+        KELEN_DYLD_LOG(@"[Init] Mô-đun DYLDInterceptionEngine đã sẵn sàng hoạt động.");
     }
 }
