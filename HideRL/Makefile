@@ -27,6 +27,6 @@ HideRLess_FILES = \
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
 HideRLess_PRIVATE_FRAMEWORKS = Preferences
-HideRLess_CFLAGS = -fobjc-arc
+HideRLess_CFLAGS = -fobjc-arc -F$(THEOS)/vendor/lib/ -F$(THEOS)/sdk/iPhoneOS.sdk/System/Library/PrivateFrameworks/
 
 include $(THEOS_MAKE_PATH)/application.mk
