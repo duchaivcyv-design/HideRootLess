@@ -1,14 +1,32 @@
-TARGET := iphone:clang:16.5:12.0
-ARCHS := arm64
+TARGET := iphone:clang:latest:14.0
+INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
-BUNDLE_NAME := HideAppManager
+APPLICATION_NAME = HideRLess
 
-HideAppManager_FILES := HideAppController.m
-HideAppManager_INSTALL_PATH := /Library/PreferenceLoader/Preferences
-HideAppManager_FRAMEWORKS := UIKit Foundation
-HideAppManager_PRIVATE_FRAMEWORKS := Preferences
-HideAppManager_CFLAGS = -fobjc-arc
+HideRLess_FILES = \
+    main.m \
+    BypassDashboardController.m \
+    BypassCoreEngine.m \
+    AntiDebuggingEngine.m \
+    EnvironmentShieldEngine.m \
+    NetworkInterceptEngine.m \
+    MemoryProtectionEngine.m \
+    DeviceIdentifierMaskEngine.m \
+    KeychainProtectionEngine.m \
+    SandboxEscapeShieldEngine.m \
+    ProcessHidingEngine.m \
+    SymbolicLinkShieldEngine.m \
+    HookGuardEngine.xm \
+    DYLDInterceptionEngine.xm \
+    SandboxViolationShieldEngine.xm
 
-include $(THEOS_MAKE_PATH)/bundle.mk
+HideRLess_FRAMEWORKS = UIKit Foundation Security
+HideRLess_PRIVATE_FRAMEWORKS = 
+HideRLess_CFLAGS = -fobjc-arc
+
+include $(THEOS_MAKE_PATH)/application.mk
+
+after-install::
+	install.exec "uicache -p /Applications/HideRLess.app"
