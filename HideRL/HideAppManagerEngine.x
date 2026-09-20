@@ -4,6 +4,7 @@
 #import <notify.h>
 #import <sys/sysctl.h>
 #import <dlfcn.h>
+#import <mach-o/dyld.h>
 
 #define KELEN_PREFS_PATH @"/var/mobile/Library/Preferences/com.kelen.masterbypass.plist"
 #define KELEN_LOG(fmt, ...) NSLog(@"HideRLess-HideAppEngine: " fmt, ##__VA_ARGS__)
