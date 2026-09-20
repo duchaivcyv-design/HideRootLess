@@ -108,7 +108,7 @@ static void OnMasterPrefsChanged(CFNotificationCenterRef center, void *observer,
     if (controller && [controller isKindOfClass:[HideRLessMainController class]]) {
         [controller reloadPreferencesFromFile];
         [controller->_mainTableView reloadData];
-        KELEN_MAIN_LOG:@"[Dashboard] Đã làm mới trạng thái giao diện thành công từ thông báo hệ thống.";
+        KELEN_MAIN_LOG(@"[Dashboard] Đã làm mới trạng thái giao diện thành công từ thông báo hệ thống.");
     }
 }
 
@@ -163,7 +163,7 @@ static void OnMasterPrefsChanged(CFNotificationCenterRef center, void *observer,
             YES
         );
         
-        KELEN_MAIN_LOG:@"[Config] Đã thay đổi tùy chọn %@ thành: %@", key, sender.on ? @"BẬT" : @"TẮT"];
+        KELEN_MAIN_LOG(@"[Config] Đã thay đổi tùy chọn %@ thành: %@", key, sender.on ? @"BẬT" : @"TẮT");
     }
 }
 
@@ -193,13 +193,13 @@ static void OnMasterPrefsChanged(CFNotificationCenterRef center, void *observer,
         self.window.rootViewController = navController;
         [self.window makeKeyAndVisible];
         
-        KELEN_MAIN_LOG:@"[Init] Ứng dụng HideRLess đã khởi chạy hoàn tất và sẵn sàng hoạt động.";
+        KELEN_MAIN_LOG(@"[Init] Ứng dụng HideRLess đã khởi chạy hoàn tất và sẵn sàng hoạt động.");
     }
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    KELEN_MAIN_LOG:@"[State] Ứng dụng sắp chuyển sang trạng thái ẩn (Resign Active).";
+    KELEN_MAIN_LOG(@"[State] Ứng dụng sắp chuyển sang trạng thái ẩn (Resign Active).");
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -222,7 +222,7 @@ static void OnMasterPrefsChanged(CFNotificationCenterRef center, void *observer,
 
 int main(int argc, char *argv[]) {
     @autoreleasepool {
-        KELEN_MAIN_LOG:@"[Bootstrap] Đang khởi tạo tiến trình thực thi chính của ứng dụng...";
+        KELEN_MAIN_LOG(@"[Bootstrap] Đang khởi tạo tiến trình thực thi chính của ứng dụng...");
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([HideRLessAppDelegate class]));
     }
 }
