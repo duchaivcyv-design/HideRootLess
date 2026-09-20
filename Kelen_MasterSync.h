@@ -21,13 +21,15 @@ typedef struct {
     BOOL hookObjCRuntime;
 } KelenAppConfig;
 
-// Khai báo các hàm đồng bộ trung tâm
-#cplusplus
+// Khai báo các hàm đồng bộ trung tâm (Đã sửa #cplusplus thành chuẩn __cplusplus)
+#ifdef __cplusplus
 extern "C" {
-#cplusplus
+#endif
+
     BOOL Kelen_ShouldBypassCurrentApp(void);
     KelenAppConfig Kelen_GetAppConfig(void);
     void Kelen_InitializeAllModules(void);
-#cplusplus
+
+#ifdef __cplusplus
 }
-#cplusplus
+#endif
