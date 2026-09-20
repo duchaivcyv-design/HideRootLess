@@ -22,7 +22,9 @@ SUBPROJECTS += KelenBootstrapLoader
 
 HideRLess_FRAMEWORKS = UIKit Foundation Security
 HideRLess_PRIVATE_FRAMEWORKS = 
-HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
+
+# Bổ sung thêm các đường dẫn trỏ tới thư mục chứa header phụ (như KelenCore chứa fishhook.h)
+HideRLess_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -I$(THEOS_PROJECT_DIR)/KelenCore
 
 # Trỏ đến file entitlements mở rộng nickchan.entitlements
 HideRLess_ENTITLEMENTS = nickchan.entitlements
