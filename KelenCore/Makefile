@@ -1,7 +1,15 @@
 TARGET := iphone:clang:latest:14.0
 include $(THEOS)/makefiles/common.mk
 
-# Khai báo các thư mục con theo thứ tự: Build KelenCore trước, sau đó build HideApp
-SUBPROJECTS += KelenCore HideApp
+LIBRARY_NAME = KelenCore
 
-include $(THEOS_MAKE_PATH)/aggregate.mk
+KelenCore_FILES = \
+    KelenAdvancedSubController.m \
+    KelenAppSelectorController.m \
+    KelenBridgeSync.m \
+    KelenLogMonitorController.m \
+    KelenSearchBypassEngine.m
+
+KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
+
+include $(THEOS_MAKE_PATH)/library.mk
