@@ -14,8 +14,8 @@ KelenCore_FILES = \
 
 KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -I$(THEOS_PROJECT_DIR)/..
 
-# Thêm đường dẫn PrivateFrameworks của SDK để linker tìm thấy Preferences
-KelenCore_LDFLAGS += -F$(SDKROOT)/System/Library/PrivateFrameworks
-KelenCore_FRAMEWORKS = Preferences UIKit Foundation
+# Sử dụng chính xác cú pháp cho public và private frameworks trong Theos
+KelenCore_FRAMEWORKS = UIKit Foundation
+KelenCore_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/library.mk
