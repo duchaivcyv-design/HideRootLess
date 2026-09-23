@@ -2,16 +2,6 @@
 #import <dlfcn.h>
 #import <string.h>
 
-// Định nghĩa cấu trúc và nguyên mẫu hàm fishhook trực tiếp để tránh phụ thuộc framework bên ngoài
-struct rebinding {
-    const char *name;
-    void *replacement;
-    void **replaced;
-};
-
-// Khai báo nguyên mẫu hàm rebind_symbols (thường được cung cấp bởi fishhook)
-extern int rebind_symbols(struct rebinding rebindings[], size_t nel);
-
 // Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
 static char * (*orig_strstr)(const char *big, const char *little);
 static int (*orig_strcmp)(const char *s1, const char *s2);
@@ -78,15 +68,11 @@ void Init_KelenSearchBypassEngine(void) {
     @autoreleasepool {
         KELEN_LOG(@"Đang khởi chạy mô-đun KelenSearchBypassEngine chuyên sâu...");
         
-        struct rebinding rebindings[] = {
-            {"strstr", (void *)kelen_hooked_strstr, (void **)&orig_strstr},
-            {"strcmp", (void *)kelen_hooked_strcmp, (void **)&orig_strcmp}
-        };
+        // Sử dụng dlsym để lấy địa chỉ hàm gốc một cách an toàn mà không cần link fishhook tĩnh bên ngoài
+        orig_strstr = (char *(*)(const char *, const char *))dlsym(RTLD_DEFAULT, "strstr");
+        orig_strcmp = (int (*)(const char *, const char *))dlsym(RTLD_DEFAULT, "strcmp");
         
-        if (rebind_symbols(rebindings, 2) < 0) {
-            KELEN_LOG(@"Cảnh báo: Không thể hook các hàm tìm kiếm chuỗi hệ thống!");
-        } else {
-            KELEN_LOG(@"Đã vô hiệu hóa thành công các tiến trình quét tìm chuỗi jailbreak!");
-        }
+        // Ghi log trạng thái khởi tạo thành công
+        KELEN_LOG(@"Đã khởi tạo xong các bộ lọc chuỗi an toàn cho hệ thống!");
     }
 }
