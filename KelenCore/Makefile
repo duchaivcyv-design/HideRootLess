@@ -1,4 +1,3 @@
-TARGET := iphone:clang:latest:14.0
 include $(THEOS)/makefiles/common.mk
 
 LIBRARY_NAME = KelenCore
@@ -10,9 +9,11 @@ KelenCore_FILES = \
     KelenLogMonitorController.m \
     KelenSearchBypassEngine.m \
     KelenSecurityPresets.m \
-    ../fishhook.c
+    fishhook.c
 
-KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -I$(THEOS_PROJECT_DIR)/..
-KelenCore_FRAMEWORKS = UIKit Foundation
+# Thêm dòng này để liên kết Preferences framework
+KelenCore_FRAMEWORKS = Preferences UIKit
+
+KelenCore_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/library.mk
