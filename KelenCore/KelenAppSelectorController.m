@@ -1,10 +1,16 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
+#import <objc/runtime.h>
 #import "Kelen_MasterSync.h"
 
-// Khai báo tư nhân cho MobileCoreServices / LaunchServices để lấy danh sách app đã cài đặt
+// Đảm bảo macro log chuẩn xác chống lỗi biên dịch
+#ifndef KELEN_LOG
+#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
+#endif
+
+// Khai báo giao diện ẩn cho LaunchServices để lấy danh sách ứng dụng đã cài đặt
 @interface LSApplicationWorkspace : NSObject
-+ (defaultWorkspace)sharedInstance;
++ (id)sharedInstance;
 - (NSArray *)allInstalledApplications;
 @end
 
@@ -54,7 +60,6 @@
                     NSString *bundleID = [app performSelector:@selector(applicationIdentifier)];
                     NSString *appName = [app performSelector:@selector(localizedName)];
                     
-                    // Loại bỏ các ứng dụng hệ thống cốt lõi không cần thiết nếu muốn (tùy chọn)
                     if (bundleID && appName) {
                         PSSpecifier *appSpec = [PSSpecifier preferenceSpecifierNamed:appName
                                                                             target:self
@@ -87,7 +92,7 @@
             return prefs[bundleID];
         }
     }
-    return @NO; // Mặc định tắt cho từng app cụ thể, hoặc @YES tùy chiến lược
+    return @NO;
 }
 
 // Ghi trạng thái khi người dùng gạt công tắc cho từng app
@@ -113,7 +118,8 @@
             YES
         );
         
-        KELEN_LOG:@"Đã cập nhật trạng thái bypass cho ứng dụng [%@]: %@", bundleID, value;
+        // Đã sửa cú pháp macro log chuẩn xác có ngoặc đơn
+        KELEN_LOG(@"Đã cập nhật trạng thái bypass cho ứng dụng [%@]: %@", bundleID, value);
     }
 }
 
