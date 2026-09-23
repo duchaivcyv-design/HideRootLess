@@ -1,6 +1,11 @@
 #import "Kelen_MasterSync.h"
 #import <notify.h>
 
+// Đảm bảo macro log chuẩn xác chống lỗi biên dịch
+#ifndef KELEN_LOG
+#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
+#endif
+
 // Biến tĩnh lưu cache trạng thái cấu hình trong RAM để tối ưu tốc độ đọc, tránh gọi I/O liên tục
 static NSMutableDictionary *g_KelenRuntimeCache = nil;
 static BOOL g_KelenIsObserverRegistered = NO;
@@ -8,7 +13,7 @@ static BOOL g_KelenIsObserverRegistered = NO;
 // Hàm callback xử lý khi nhận được tín hiệu reload từ giao diện cài đặt
 static void KelenPreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     @autoreleasepool {
-        KELEN_LOG:@"Nhận được tín hiệu làm mới cấu hình từ hệ thống Preferences!";
+        KELEN_LOG(@"Nhận được tín hiệu làm mới cấu hình từ hệ thống Preferences!");
         if (g_KelenRuntimeCache) {
             [g_KelenRuntimeCache removeAllObjects];
             NSDictionary *latestPrefs = [NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH];
@@ -39,7 +44,7 @@ __attribute__((constructor)) static void InitializeKelenBridgeSync(void) {
                 CFNotificationSuspensionBehaviorDeliverImmediately
             );
             g_KelenIsObserverRegistered = YES;
-            KELEN_LOG:@"Đã kích hoạt thành công cầu nối đồng bộ tiến trình (Bridge Sync Initialized).";
+            KELEN_LOG(@"Đã kích hoạt thành công cầu nối đồng bộ tiến trình (Bridge Sync Initialized).");
         }
     }
 }
