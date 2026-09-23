@@ -9,14 +9,12 @@ KelenCore_FILES = \
     KelenBridgeSync.m \
     KelenLogMonitorController.m \
     KelenSearchBypassEngine.m \
-    KelenSecurityPresets.m
+    KelenSecurityPresets.m \
+    ../fishhook.c
 
-KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
+KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR) -I$(THEOS_PROJECT_DIR)/..
 
 # Sử dụng PRIVATE_FRAMEWORKS để liên kết chính xác Preferences framework
 KelenCore_PRIVATE_FRAMEWORKS = Preferences
-
-# Khai báo liên kết thư viện fishhook
-KelenCore_LIBRARIES += fishhook
 
 include $(THEOS_MAKE_PATH)/library.mk
