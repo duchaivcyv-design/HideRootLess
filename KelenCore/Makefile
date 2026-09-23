@@ -8,7 +8,8 @@ KelenCore_FILES = \
     KelenAppSelectorController.m \
     KelenBridgeSync.m \
     KelenLogMonitorController.m \
-    KelenSearchBypassEngine.m
+    KelenSearchBypassEngine.m \
+    KelenSecurityPresets.m
 
 KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
 
