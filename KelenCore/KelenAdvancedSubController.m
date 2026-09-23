@@ -125,7 +125,7 @@
         [group3 setProperty:@"Các tác vụ dọn dẹp và áp dụng cấu hình nhanh" forKey:@"footerText"];
         [specs addObject:group3];
 
-        // Item 6: Clear Cache Button (Đã sửa đúng cú pháp action cho button cell)
+        // Item 6: Clear Cache Button (Đã chuyển selector thành NSString an toàn cho ARC)
         PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ Tạm (Cache)"
                                                              target:self
                                                                 set:nil
@@ -133,10 +133,10 @@
                                                              detail:nil
                                                                cell:PSButtonCell
                                                                edit:nil];
-        [item6 setProperty:@selector(handleClearCacheAction:) forKey:@"action"];
+        [item6 setProperty:NSStringFromSelector(@selector(handleClearCacheAction:)) forKey:@"action"];
         [specs addObject:item6];
 
-        // Item 7: Respring SpringBoard Button (Đã sửa đúng cú pháp action cho button cell)
+        // Item 7: Respring SpringBoard Button (Đã chuyển selector thành NSString an toàn cho ARC)
         PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Áp dụng & Làm mới (Respring)"
                                                              target:self
                                                                 set:nil
@@ -144,7 +144,7 @@
                                                              detail:nil
                                                                cell:PSButtonCell
                                                                edit:nil];
-        [item7 setProperty:@selector(handleRespringAction:) forKey:@"action"];
+        [item7 setProperty:NSStringFromSelector(@selector(handleRespringAction:)) forKey:@"action"];
         [specs addObject:item7];
 
         _specifiers = specs;
@@ -212,7 +212,7 @@
 
 - (void)handleClearCacheAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG(@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...");
+        KELEN_LOG:@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...";
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *tmpDir = NSTemporaryDirectory();
@@ -234,7 +234,7 @@
 
 - (void)handleRespringAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG(@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...");
+        KELEN_LOG:@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...";
         
         pid_t pid;
         const char *args[] = {"killall", "backboardd", NULL};
