@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h> // <--- Bổ sung dòng này để định nghĩa intptr_t
 
 #if !defined(FISHHOOK_EXPORT)
 #define FISHHOOK_EXPORT __attribute__((visibility("default")))
