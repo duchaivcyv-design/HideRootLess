@@ -1,8 +1,27 @@
-#import <Preferences/PSListController.h>
-#import <Preferences/PSSpecifier.h>
-#import <Preferences/PSSwitchTableCell.h>
 #import <spawn.h>
 #import "Kelen_MasterSync.h"
+
+// --- KHAI BÁO GIẢ (FORWARD DECLARATION) CHO PREFERENCES FRAMEWORK ---
+typedef id PSSpecifierType;
+typedef id PSEditPaneType;
+
+@interface PSSpecifier : NSObject
++ (instancetype)preferenceSpecifierNamed:(NSString *)title target:(id)target set:(SEL)set get:(SEL)get detail:(Class)detail cell:(int)cell edit:(Class)edit;
+- (void)setProperty:(id)value forKey:(NSString *)key;
+- (id)propertyForKey:(NSString *)key;
+@end
+
+@interface PSListController : UIViewController {
+    NSArray *_specifiers;
+}
+@property (nonatomic, strong) NSArray *specifiers;
+@end
+
+// Các hằng số cell type của Preferences framework
+static const int PSGroupCell = 0;
+static const int PSSwitchCell = 2;
+static const int PSButtonCell = 1;
+// -------------------------------------------------------------------
 
 // Định nghĩa lại macro log hoàn chỉnh chống lỗi label
 #ifndef KELEN_LOG
