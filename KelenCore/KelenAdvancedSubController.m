@@ -4,7 +4,7 @@
 #import <spawn.h>
 #import "Kelen_MasterSync.h"
 
-// Khai báo macro log an toàn nếu chưa có trong header
+// Định nghĩa lại macro log hoàn chỉnh chống lỗi label
 #ifndef KELEN_LOG
 #define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
 #endif
@@ -125,7 +125,7 @@
         [group3 setProperty:@"Các tác vụ dọn dẹp và áp dụng cấu hình nhanh" forKey:@"footerText"];
         [specs addObject:group3];
 
-        // Item 6: Clear Cache Button (Đã chuyển selector thành NSString an toàn cho ARC)
+        // Item 6: Clear Cache Button
         PSSpecifier *item6 = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Bộ nhớ Tạm (Cache)"
                                                              target:self
                                                                 set:nil
@@ -136,7 +136,7 @@
         [item6 setProperty:NSStringFromSelector(@selector(handleClearCacheAction:)) forKey:@"action"];
         [specs addObject:item6];
 
-        // Item 7: Respring SpringBoard Button (Đã chuyển selector thành NSString an toàn cho ARC)
+        // Item 7: Respring SpringBoard Button
         PSSpecifier *item7 = [PSSpecifier preferenceSpecifierNamed:@"Áp dụng & Làm mới (Respring)"
                                                              target:self
                                                                 set:nil
@@ -212,7 +212,7 @@
 
 - (void)handleClearCacheAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...";
+        KELEN_LOG(@"Thực hiện dọn dẹp bộ nhớ cache đồng bộ...");
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *tmpDir = NSTemporaryDirectory();
@@ -234,7 +234,7 @@
 
 - (void)handleRespringAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...";
+        KELEN_LOG(@"Tiến hành khởi động lại SpringBoard thông qua tiến trình hệ thống...");
         
         pid_t pid;
         const char *args[] = {"killall", "backboardd", NULL};
