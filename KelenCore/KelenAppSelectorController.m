@@ -1,7 +1,22 @@
-#import <Preferences/PSListController.h>
-#import <Preferences/PSSpecifier.h>
 #import <objc/runtime.h>
 #import "Kelen_MasterSync.h"
+
+// --- KHAI BÁO GIẢ (FORWARD DECLARATION) CHO PREFERENCES FRAMEWORK ---
+@interface PSSpecifier : NSObject
++ (instancetype)preferenceSpecifierNamed:(NSString *)title target:(id)target set:(SEL)set get:(SEL)get detail:(Class)detail cell:(int)cell edit:(Class)edit;
+- (void)setProperty:(id)value forKey:(NSString *)key;
+- (id)propertyForKey:(NSString *)key;
+@end
+
+@interface PSListController : UIViewController {
+    NSArray *_specifiers;
+}
+@property (nonatomic, strong) NSArray *specifiers;
+@end
+
+static const int PSGroupCell = 0;
+static const int PSSwitchCell = 2;
+// -------------------------------------------------------------------
 
 // Đảm bảo macro log chuẩn xác chống lỗi biên dịch
 #ifndef KELEN_LOG
@@ -118,7 +133,6 @@
             YES
         );
         
-        // Đã sửa cú pháp macro log chuẩn xác có ngoặc đơn
         KELEN_LOG(@"Đã cập nhật trạng thái bypass cho ứng dụng [%@]: %@", bundleID, value);
     }
 }
