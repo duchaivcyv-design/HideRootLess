@@ -2,17 +2,15 @@
 #import <dlfcn.h>
 #import <string.h>
 
-// Thử nghiệm dự phòng nếu thiếu header fishhook, định nghĩa lại cấu trúc nguyên mẫu chống lỗi incomplete type
-#ifndef fishhook_h
+// Định nghĩa cấu trúc và nguyên mẫu hàm fishhook trực tiếp để tránh phụ thuộc framework bên ngoài
 struct rebinding {
     const char *name;
     void *replacement;
     void **replaced;
 };
-int rebind_symbols(struct rebinding rebindings[], size_t nel);
-#else
-#import <fishhook/fishhook.h>
-#endif
+
+// Khai báo nguyên mẫu hàm rebind_symbols (thường được cung cấp bởi fishhook)
+extern int rebind_symbols(struct rebinding rebindings[], size_t nel);
 
 // Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
 static char * (*orig_strstr)(const char *big, const char *little);
