@@ -1,11 +1,11 @@
 #import "Kelen_MasterSync.h"
 #import <dlfcn.h>
 #import <string.h>
+#import <fishhook/fishhook.h>
 
-// Định nghĩa chuẩn cho macro log chống lỗi label
-#ifndef KELEN_LOG
-#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
-#endif
+// Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
+static char * (*orig_strstr)(const char *big, const char *little);
+static int (*orig_strcmp)(const char *s1, const char *s2);
 
 // Danh sách các từ khóa / chuỗi định danh jailbreak cần ẩn khỏi kết quả tìm kiếm
 static NSArray *kelenGetForbiddenKeywords(void) {
@@ -23,36 +23,61 @@ static NSArray *kelenGetForbiddenKeywords(void) {
     ];
 }
 
-// Kiểm tra và lọc chuỗi tìm kiếm an toàn dựa trên runtime config
-BOOL Kelen_ShouldFilterString(const char *targetStr) {
-    if (!targetStr) return NO;
-    if (!Kelen_GetRuntimeBool(@"KelenHookFileSystem", YES)) return NO;
-    
-    @autoreleasepool {
-        NSString *str = [NSString stringWithUTF8String:targetStr];
-        if (!str) return NO;
+// Hook hàm strstr để chặn app quét tìm chuỗi đường dẫn jailbreak trong bộ nhớ
+static char * kelen_hooked_strstr(const char *big, const char *little) {
+    if (big && little) {
+        if (!Kelen_GetRuntimeBool(@"KelenHookFileSystem", YES)) {
+            return orig_strstr(big, little);
+        }
         
-        NSArray *keywords = kelenGetForbiddenKeywords();
-        for (NSString *keyword in keywords) {
-            if ([str localizedCaseInsensitiveContainsString:keyword]) {
-                return YES; // Phát hiện từ khóa nhạy cảm -> Cần lọc/chặn
+        NSString *littleStr = [NSString stringWithUTF8String:little];
+        if (littleStr) {
+            NSArray *keywords = kelenGetForbiddenKeywords();
+            for (NSString *keyword in keywords) {
+                if ([littleStr localizedCaseInsensitiveContainsString:keyword]) {
+                    return NULL;
+                }
             }
         }
     }
-    return NO;
+    return orig_strstr(big, little);
+}
+
+// Hook hàm strcmp để lọc các so sánh chuỗi trực tiếp
+static int kelen_hooked_strcmp(const char *s1, const char *s2) {
+    if (s1 && s2) {
+        if (!Kelen_GetRuntimeBool(@"KelenHookFileSystem", YES)) {
+            return orig_strcmp(s1, s2);
+        }
+        
+        NSString *s1Str = [NSString stringWithUTF8String:s1];
+        NSString *s2Str = [NSString stringWithUTF8String:s2];
+        
+        NSArray *keywords = kelenGetForbiddenKeywords();
+        for (NSString *keyword in keywords) {
+            if ((s1Str && [s1Str localizedCaseInsensitiveContainsString:keyword]) ||
+                (s2Str && [s2Str localizedCaseInsensitiveContainsString:keyword])) {
+                return -1;
+            }
+        }
+    }
+    return orig_strcmp(s1, s2);
 }
 
 // Hàm khởi tạo mô-đun lọc tìm kiếm khi tweak được nạp vào tiến trình
 void Init_KelenSearchBypassEngine(void) {
     @autoreleasepool {
-        KELEN_LOG(@"Đang khởi chạy mô-đun KelenSearchBypassEngine bảo vệ bộ nhớ...");
+        KELEN_LOG(@"Đang khởi chạy mô-đun KelenSearchBypassEngine chuyên sâu...");
         
-        // Đăng ký giám sát và tinh chỉnh cơ chế lọc chuỗi runtime
-        NSDictionary *currentPrefs = [NSDictionary dictionaryWithContentsOfFile:KELEN_PREFS_PATH];
-        if (currentPrefs) {
-            KELEN_LOG(@"Đã tải cấu hình lọc chuỗi thành công vào tiến trình.");
+        struct rebinding rebindings[] = {
+            {"strstr", (void *)kelen_hooked_strstr, (void **)&orig_strstr},
+            {"strcmp", (void *)kelen_hooked_strcmp, (void **)&orig_strcmp}
+        };
+        
+        if (rebind_symbols(rebindings, 2) < 0) {
+            KELEN_LOG(@"Cảnh báo: Không thể hook các hàm tìm kiếm chuỗi hệ thống!");
+        } else {
+            KELEN_LOG(@"Đã vô hiệu hóa thành công các tiến trình quét tìm chuỗi jailbreak!");
         }
-        
-        KELEN_LOG(@"Mô-đun bảo vệ KelenSearchBypassEngine đã sẵn sàng hoạt động!");
     }
 }
