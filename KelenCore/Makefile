@@ -12,7 +12,10 @@ KelenCore_FILES = \
 
 KelenCore_CFLAGS = -fobjc-arc -I$(THEOS_PROJECT_DIR)
 
-# Chỉ giữ lại framework Preferences của hệ thống
-KelenCore_EXTRA_FRAMEWORKS += Preferences
+# Sử dụng PRIVATE_FRAMEWORKS để liên kết chính xác Preferences framework
+KelenCore_PRIVATE_FRAMEWORKS = Preferences
+
+# Khai báo liên kết thư viện fishhook
+KelenCore_LIBRARIES += fishhook
 
 include $(THEOS_MAKE_PATH)/library.mk
