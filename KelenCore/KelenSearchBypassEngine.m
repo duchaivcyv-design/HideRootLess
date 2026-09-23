@@ -1,7 +1,6 @@
 #import "Kelen_MasterSync.h"
 #import <dlfcn.h>
 #import <string.h>
-#import <fishhook/fishhook.h>
 
 // Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
 static char * (*orig_strstr)(const char *big, const char *little);
