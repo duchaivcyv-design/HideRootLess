@@ -1,6 +1,12 @@
 #import "Kelen_MasterSync.h"
 #import <dlfcn.h>
 #import <string.h>
+#import <fishhook/fishhook.h>
+
+// Định nghĩa chuẩn cho macro log chống lỗi label
+#ifndef KELEN_LOG
+#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
+#endif
 
 // Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
 static char * (*orig_strstr)(const char *big, const char *little);
@@ -22,7 +28,7 @@ static NSArray *kelenGetForbiddenKeywords(void) {
     ];
 }
 
-// Hook hàm strstrstr để chặn app quét tìm chuỗi đường dẫn jailbreak trong bộ nhớ
+// Hook hàm strstr để chặn app quét tìm chuỗi đường dẫn jailbreak trong bộ nhớ
 static char * kelen_hooked_strstr(const char *big, const char *little) {
     if (big && little) {
         // Kiểm tra xem cấu hình ẩn filesystem có đang bật không
@@ -65,20 +71,19 @@ static int kelen_hooked_strcmp(const char *s1, const char *s2) {
 // Hàm khởi tạo mô-đun lọc tìm kiếm khi tweak được nạp vào tiến trình
 void Init_KelenSearchBypassEngine(void) {
     @autoreleasepool {
-        KELEN_LOG:@"Đang khởi chạy mô-đun KelenSearchBypassEngine chuyên sâu...";
+        KELEN_LOG(@"Đang khởi chạy mô-đun KelenSearchBypassEngine chuyên sâu...");
         
-        // Sử dụng fishhook hoặc dlsym để thay thế hàm tìm kiếm chuỗi
-        // (Ví dụ minh họa cấu trúc rebinding symbols qua fishhook)
+        // Sử dụng fishhook để thay thế hàm tìm kiếm chuỗi
         struct rebinding rebindings[] = {
             {"strstr", (void *)kelen_hooked_strstr, (void **)&orig_strstr},
             {"strcmp", (void *)kelen_hooked_strcmp, (void **)&orig_strcmp}
         };
         
-        // Tiến hành gán hook an toàn
+        // Tiến hành gán hook an toàn thông qua fishhook
         if (rebind_symbols(rebindings, 2) < 0) {
-            KELEN_LOG:@"Cảnh báo: Không thể hook các hàm tìm kiếm chuỗi hệ thống!";
+            KELEN_LOG(@"Cảnh báo: Không thể hook các hàm tìm kiếm chuỗi hệ thống!");
         } else {
-            KELEN_LOG:@"Đã vô hiệu hóa thành công các tiến trình quét tìm chuỗi jailbreak!";
+            KELEN_LOG(@"Đã vô hiệu hóa thành công các tiến trình quét tìm chuỗi jailbreak!");
         }
     }
 }
