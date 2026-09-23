@@ -5,15 +5,18 @@
 
 #include "fishhook.h"
 
-#import <dlfcn.h>
-#import <stdlib.h>
-#import <string.h>
-#import <sys/types.h>
-#import <mach/mach.h>
-#import <mach/vm_map.h>
-#import <mach/vm_prot.h>
-#import <mach-o/loader.h>
-#import <mach-o/nlist.h>
+#include <dlfcn.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <mach/mach.h>
+#include <mach/vm_map.h>
+#include <mach/vm_prot.h>
+#include <mach-o/dyld.h>
+#include <mach-o/loader.h>
+#include <mach-o/nlist.h>
 
 #ifdef __LP64__
 typedef struct mach_header_64 mach_header_t;
@@ -135,7 +138,6 @@ static void _rebind_symbols_for_image(struct rebindings_entry *rebindingsare,
                       *cur->rebindings[m].replaced == NULL) {
                     *cur->rebindings[m].replaced = indirect_symbol_bindings[k];
                   }
-                  vm_prot_t dummy;
                   vm_address_t address = (vm_address_t)&indirect_symbol_bindings[k];
                   vm_size_t size = sizeof(void *);
                   vm_protect(mach_task_self(), address, size, 0, VM_PROT_READ | VM_PROT_WRITE);
@@ -155,20 +157,15 @@ static void _rebind_symbols_for_image(struct rebindings_entry *rebindingsare,
   }
 }
 
-static void _rebind_symbols_image_handler(const struct mach_header *header, intptr_t slide) {
-  _rebind_symbols_for_image(_rebindings_head, header, slide);
-}
-
 int rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel) {
   int retval = prepend_rebindings(&_rebindings_head, rebindings, rebindings_nel);
   if (retval < 0) {
     return retval;
   }
   
-  // Rebind symbols in already loaded images
   uint32_t c = _dyld_image_count();
   for (uint32_t i = 0; i < c; i++) {
-    _rebind_symbols_for_image(_rebindings_head, _dyld_get_image_header(i), _dyld_get_image_vmaddr_slide(i));
+    _rebind_symbols_for_image(_rebindings_head, _dyld_get_image_header(i), (intptr_t)_dyld_get_image_vmaddr_slide(i));
   }
   return 0;
 }
