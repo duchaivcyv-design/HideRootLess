@@ -2,6 +2,11 @@
 #import <Preferences/PSSpecifier.h>
 #import "Kelen_MasterSync.h"
 
+// Định nghĩa chuẩn cho macro log chống lỗi label
+#ifndef KELEN_LOG
+#define KELEN_LOG(fmt, ...) NSLog(@"[KelenCore] " fmt, ##__VA_ARGS__)
+#endif
+
 @interface KelenLogMonitorController : PSListController {
     NSTimer *_refreshTimer;
 }
@@ -47,20 +52,26 @@
                                                                edit:Nil];
         [specs addObject:group2];
 
-        // Mục con 2: Nút làm mới danh sách log thủ công
+        // Mục con 2: Nút làm mới danh sách log thủ công (Đã sửa đúng chuẩn PSSpecifier button)
         PSSpecifier *itemRefreshBtn = [PSSpecifier preferenceSpecifierNamed:@"Làm mới Dòng thời gian Log"
-                                                                     target:self
-                                                                   selector:@selector(refreshLogContentAction:)
-                                                                       cell:PSButtonCell
-                                                                     edit:Nil];
+                                                                    target:self
+                                                                       set:nil
+                                                                       get:nil
+                                                                    detail:Nil
+                                                                      cell:PSButtonCell
+                                                                      edit:Nil];
+        [itemRefreshBtn setProperty:NSStringFromSelector(@selector(refreshLogContentAction:)) forKey:@"action"];
         [specs addObject:itemRefreshBtn];
 
         // Mục con 3: Nút xuất file log ra thiết bị
         PSSpecifier *itemExportBtn = [PSSpecifier preferenceSpecifierNamed:@"Xuất File Nhật ký (.txt)"
                                                                     target:self
-                                                                  selector:@selector(exportLogFileAction:)
+                                                                       set:nil
+                                                                       get:nil
+                                                                    detail:Nil
                                                                       cell:PSButtonCell
-                                                                    edit:Nil];
+                                                                      edit:Nil];
+        [itemExportBtn setProperty:NSStringFromSelector(@selector(exportLogFileAction:)) forKey:@"action"];
         [specs addObject:itemExportBtn];
 
         // Nhóm 3: Tác vụ quản trị bộ nhớ log
@@ -76,9 +87,12 @@
         // Mục con 4: Nút xóa lịch sử log
         PSSpecifier *itemClearBtn = [PSSpecifier preferenceSpecifierNamed:@"Xóa Sạch Lịch sử Nhật ký"
                                                                    target:self
-                                                                 selector:@selector(clearLogHistoryAction:)
+                                                                      set:nil
+                                                                      get:nil
+                                                                   detail:Nil
                                                                      cell:PSButtonCell
-                                                                   edit:Nil];
+                                                                     edit:Nil];
+        [itemClearBtn setProperty:NSStringFromSelector(@selector(clearLogHistoryAction:)) forKey:@"action"];
         [specs addObject:itemClearBtn];
 
         _specifiers = specs;
@@ -104,7 +118,8 @@
 
 - (void)refreshLogContentAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Đang làm mới nội dung bộ giám sát log...";
+        // Đã sửa cú pháp có ngoặc đơn cho macro log
+        KELEN_LOG(@"Đang làm mới nội dung bộ giám sát log...");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Đã làm mới"
                                                                        message:@"Đã nạp lại toàn bộ dòng nhật ký hệ thống mới nhất!"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -129,7 +144,8 @@
 
 - (void)clearLogHistoryAction:(PSSpecifier *)specifier {
     @autoreleasepool {
-        KELEN_LOG:@"Đã xóa sạch toàn bộ lịch sử file log.";
+        // Đã sửa cú pháp có ngoặc đơn cho macro log
+        KELEN_LOG(@"Đã xóa sạch toàn bộ lịch sử file log.");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Hoàn tất"
                                                                        message:@"Đã xóa toàn bộ nội dung nhật ký hệ thống!"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
