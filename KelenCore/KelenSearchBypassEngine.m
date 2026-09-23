@@ -2,6 +2,15 @@
 #import <dlfcn.h>
 #import <string.h>
 
+// Định nghĩa cấu trúc và nguyên mẫu hàm fishhook trực tiếp
+struct rebinding {
+    const char *name;
+    void *replacement;
+    void **replaced;
+};
+
+extern int rebind_symbols(struct rebinding rebindings[], size_t nel);
+
 // Khai báo con trỏ hàm gốc cho việc tìm kiếm chuỗi / ký tự hệ thống
 static char * (*orig_strstr)(const char *big, const char *little);
 static int (*orig_strcmp)(const char *s1, const char *s2);
@@ -22,8 +31,8 @@ static NSArray *kelenGetForbiddenKeywords(void) {
     ];
 }
 
-// Hook hàm strstr để chặn app quét tìm chuỗi đường dẫn jailbreak trong bộ nhớ
-static char * kelen_hooked_strstr(const char *big, const char *little) {
+// Hook hàm strstr để chặn app quét tìm chuỗi đường dẫn jailbreak trong bộ nhớ (Thêm __unused để tránh lỗi biên dịch)
+static char * __unused kelen_hooked_strstr(const char *big, const char *little) {
     if (big && little) {
         if (!Kelen_GetRuntimeBool(@"KelenHookFileSystem", YES)) {
             return orig_strstr(big, little);
@@ -42,8 +51,8 @@ static char * kelen_hooked_strstr(const char *big, const char *little) {
     return orig_strstr(big, little);
 }
 
-// Hook hàm strcmp để lọc các so sánh chuỗi trực tiếp
-static int kelen_hooked_strcmp(const char *s1, const char *s2) {
+// Hook hàm strcmp để lọc các so sánh chuỗi trực tiếp (Thêm __unused để tránh lỗi biên dịch)
+static int __unused kelen_hooked_strcmp(const char *s1, const char *s2) {
     if (s1 && s2) {
         if (!Kelen_GetRuntimeBool(@"KelenHookFileSystem", YES)) {
             return orig_strcmp(s1, s2);
@@ -68,11 +77,15 @@ void Init_KelenSearchBypassEngine(void) {
     @autoreleasepool {
         KELEN_LOG(@"Đang khởi chạy mô-đun KelenSearchBypassEngine chuyên sâu...");
         
-        // Sử dụng dlsym để lấy địa chỉ hàm gốc một cách an toàn mà không cần link fishhook tĩnh bên ngoài
-        orig_strstr = (char *(*)(const char *, const char *))dlsym(RTLD_DEFAULT, "strstr");
-        orig_strcmp = (int (*)(const char *, const char *))dlsym(RTLD_DEFAULT, "strcmp");
+        struct rebinding rebindings[] = {
+            {"strstr", (void *)kelen_hooked_strstr, (void **)&orig_strstr},
+            {"strcmp", (void *)kelen_hooked_strcmp, (void **)&orig_strcmp}
+        };
         
-        // Ghi log trạng thái khởi tạo thành công
-        KELEN_LOG(@"Đã khởi tạo xong các bộ lọc chuỗi an toàn cho hệ thống!");
+        if (rebind_symbols(rebindings, 2) < 0) {
+            KELEN_LOG(@"Cảnh báo: Không thể hook các hàm tìm kiếm chuỗi hệ thống!");
+        } else {
+            KELEN_LOG(@"Đã vô hiệu hóa thành công các tiến trình quét tìm chuỗi jailbreak!");
+        }
     }
 }
